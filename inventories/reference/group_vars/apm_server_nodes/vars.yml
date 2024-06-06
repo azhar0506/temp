@@ -1,0 +1,41 @@
+###
+# Common varialbes
+##
+apm_server_image: "docker.elastic.co/apm/apm-server:{{ elk_version }}"
+apm_server_user:  elasticuser
+apm_server_group: elasticuser
+apm_server_dir:   /configdata/apm-server-docker
+###
+
+
+###
+# Variables for .env
+##
+apm_ssl_dir:        /usr/share/apm-server
+apm_ssl_ca_id:      ca.crt
+apm_ssl_ca_cert_id: elk.crt
+apm_ssl_ca_key_id:  elk.key
+###
+
+
+###
+# Variables for apm-server.yml
+##
+apm_server_host:           0.0.0.0:61118
+apm_server_ssl_ca_cert_id: "{{ apm_ssl_dir }}/{{ apm_ssl_ca_cert_id }}"
+apm_server_ssl_ca_key_id:  "{{ apm_ssl_dir }}/{{ apm_ssl_ca_key_id }}"
+
+apm_kibana_enabled:        true
+apm_kibana_ssl_ca_id:      "{{ apm_ssl_dir }}/{{ apm_ssl_ca_id }}"
+apm_kibana_ssl_ca_cert_id: "{{ apm_ssl_dir }}/{{ apm_ssl_ca_cert_id }}"
+apm_kibana_ssl_ca_key_id:  "{{ apm_ssl_dir }}/{{ apm_ssl_ca_key_id }}"
+
+apm_monitoring_enabled:        true
+apm_monitoring_ssl_ca_id:      "{{ apm_ssl_dir }}/{{ apm_ssl_ca_id }}"
+apm_monitoring_ssl_ca_cert_id: "{{ apm_ssl_dir }}/{{ apm_ssl_ca_cert_id }}"
+apm_monitoring_ssl_ca_key_id:  "{{ apm_ssl_dir }}/{{ apm_ssl_ca_key_id }}"
+
+apm_output_server_ssl_ca_id:      "{{ apm_ssl_dir }}/{{ apm_ssl_ca_id }}"
+apm_output_server_ssl_ca_cert_id: "{{ apm_ssl_dir }}/{{ apm_ssl_ca_cert_id }}"
+apm_output_server_ssl_ca_key_id:  "{{ apm_ssl_dir }}/{{ apm_ssl_ca_key_id }}"
+###

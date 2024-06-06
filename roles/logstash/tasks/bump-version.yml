@@ -1,0 +1,7 @@
+- name:     Bump Logstash version in .env file
+  template:
+    src:   templates/.env.j2
+    dest:  "{{ logstash_dir }}/.env"
+    owner: "{{ logstash_user }}"
+    group: "{{ logstash_group }}"
+    mode:  "0744"

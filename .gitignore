@@ -1,0 +1,14 @@
+ansible.cfg
+
+.DS_Store
+*.retry
+tmp
+config.ini
+*.keytab
+*krb5.conf
+.vault
+
+*/*/*/ssl_production/*
+*/*/*/ssl_production/*
+*/*/*/ssl_reference/*
+

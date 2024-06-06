@@ -1,0 +1,40 @@
+{
+  "cluster" : [
+    "manage_ingest_pipelines",
+    "manage_pipeline",
+    "monitor",
+    "read_ilm",
+    "read_pipeline",
+    "manage_index_templates"
+  ],
+  "indices" : [
+    {
+      "names" : [
+        "*filebeat*"
+      ],
+      "privileges" : [
+        "auto_configure",
+        "create_doc",
+        "create_index",
+        "manage",
+        "view_index_metadata"
+      ],
+      "field_security" : {
+        "grant" : [
+          "*"
+        ],
+        "except" : [ ]
+      },
+      "allow_restricted_indices" : false
+    }
+  ],
+  "applications" : [ ],
+  "run_as" : [ ],
+	"metadata": {
+		"version":     2,
+		"description": "Deployed with Ansible"
+	},
+  "transient_metadata" : {
+    "enabled" : true
+  }
+}

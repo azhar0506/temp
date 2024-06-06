@@ -1,0 +1,2 @@
+{"attributes":{"fieldAttrs":"{}","fields":"[]","runtimeFieldMap":"{}","timeFieldName":"accounting_event_time","title":"acct*","typeMeta":"{}"},"coreMigrationVersion":"8.2.2","id":"acct*","migrationVersion":{"index-pattern":"8.0.0"},"references":[],"type":"index-pattern","updated_at":"2022-07-12T17:28:31.493Z","version":"WzYxODk3OCw0MV0="}
+{"excludedObjects":[],"excludedObjectsCount":0,"exportedCount":1,"missingRefCount":0,"missingReferences":[]}

@@ -1,0 +1,62 @@
+###
+# Metricbeat docker settings
+##
+metricbeat_image: "docker.elastic.co/beats/metricbeat:{{ elk_version }}"
+###
+
+###
+# Metricbeat .env settings
+##
+metricbeat_user:  elasticuser
+metricbeat_group: elasticuser
+
+metricbeat_dir:                /configdata/metricbeat-docker
+metricbeat_mounted_dir:        /usr/share/metricbeat
+
+metricbeat_config_dir:         "{{ metricbeat_dir }}/config"
+metricbeat_ssl_dir:            "{{ metricbeat_dir }}/ssl"
+metricbeat_mounted_config_dir: "{{ metricbeat_mounted_dir }}/config"
+metricbeat_mounted_ssl_dir:    "{{ metricbeat_mounted_dir }}/ssl"
+###
+
+###
+# Metricbeat .yml settings
+##
+metricbeat_http_enabled:             true
+metricbeat_setup_dashboards_enabled: false
+
+metricbeat_kibana_host:                        "https://kibana.ref.elk.radius.nat.bt.com:8080"
+metricbeat_kibana_ssl_certificate_authorities: "{{ metricbeat_mounted_dir }}/ca.crt"
+metricbeat_kibana_ssl_certificate:             "{{ metricbeat_mounted_dir }}/elk.crt"
+metricbeat_kibana_ssl_key:                     "{{ metricbeat_mounted_dir }}/elk.key"
+
+
+metricbeat_system_module_period: 20s
+metricbeat_docker_module_period: 20s
+
+metricbeat_beat_module_period: 10s
+metricbeat_beat_module_hosts:  ["http://localhost:5067"]
+
+metricbeat_elastic_module_enabled:                 false # Should be disabled by default
+metricbeat_elastic_module_period:                  10s
+metricbeat_elastic_module_hosts:                   "http://localhost:9200"
+metricbeat_elastic_module_certificate_authorities: "{{ metricbeat_mounted_dir }}/ca.crt"
+
+metricbeat_kibana_module_enabled:                 false # Should be disabled by default
+metricbeat_kibana_module_period:                  10s
+metricbeat_kibana_module_hosts:                   "https://kibana.ref.elk.radius.nat.bt.com:8080"
+metricbeat_kibana_module_certificate_authorities: "{{ metricbeat_mounted_dir }}/ca.crt"
+
+metricbeat_logstash_module_enabled: false # Should be disabled by default
+metricbeat_logstash_module_period:  10s
+metricbeat_logstash_module_hosts:   "http://localhost:9600"
+
+metricbeat_ssl_ca_id:      ca.crt
+metricbeat_ssl_ca_cert_id: elk.crt
+metricbeat_ssl_ca_key_id:  elk.key
+
+metricbeat_output_elasticsearch_hosts:                   "https://rn207.ref.elk.radius.nat.bt.com:61116"
+metricbeat_output_elasticsearch_certificate_authorities: "{{ metricbeat_mounted_dir }}/ca.crt"
+metricbeat_output_elasticsearch_certificate:             "{{ metricbeat_mounted_dir }}/elk.crt"
+metricbeat_output_elasticsearch_key:                     "{{ metricbeat_mounted_dir }}/elk.key"
+###

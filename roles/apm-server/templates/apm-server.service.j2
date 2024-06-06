@@ -1,0 +1,24 @@
+[Unit]
+Description=APM-Server is a reciever application for APM logs.
+Documentation=https://www.elastic.co/observability/application-performance-monitoring
+
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+User={{ apm_server_user }}
+Group={{ apm_server_user }}
+UMask=0027
+Environment="BEAT_LOG_OPTS="
+Environment="BEAT_CONFIG_OPTS=-c {{ apm_server_dir }}/apm_server.yml"
+Environment="BEAT_PATH_OPTS=--path.home {{ apm_server_dir }} --path.config {{ apm_server_dir }} --path.logs {{ apm_server_logs_dir }}"
+ExecStart={{ apm_server_dir }}/apm-server --environment systemd $APM_SERVER_LOG_OPTS $APM_SERVER_CONFIG_OPTS $APM_SERVER_PATH_OPTS
+
+StandardOutput=file:{{ apm_server_logs_dir }}/apm_server.log
+StandardError=file:{{ apm_server_logs_dir }}/apm_server-error.log
+
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+

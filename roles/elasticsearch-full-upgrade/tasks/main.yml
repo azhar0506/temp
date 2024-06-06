@@ -1,0 +1,2 @@
+---
+- import_tasks: elasticsearch-full-upgrade.yml

@@ -1,0 +1,7 @@
+- name:     Bump Kibana version in .env file
+  template:
+    src:   templates/.env.j2
+    dest:  "{{ kibana_dir }}/.env"
+    owner: "{{ kibana_user }}"
+    group: "{{ kibana_group }}"
+    mode:  "0744"

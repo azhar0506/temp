@@ -1,0 +1,2 @@
+{"attributes":{"fieldAttrs":"{\"policy_name\":{\"count\":1}}","fieldFormatMap":"{}","fields":"[]","name":"auth-wbmc","runtimeFieldMap":"{}","sourceFilters":"[]","timeFieldName":"@timestamp","title":"auth-wbmc*","typeMeta":"{}"},"coreMigrationVersion":"8.8.0","created_at":"2024-01-26T21:03:03.371Z","id":"auth-wbmc","managed":false,"references":[],"type":"index-pattern","typeMigrationVersion":"8.0.0","updated_at":"2024-01-26T21:05:13.224Z","version":"WzE5NjAwLDEzXQ=="}
+{"excludedObjects":[],"excludedObjectsCount":0,"exportedCount":1,"missingRefCount":0,"missingReferences":[]}

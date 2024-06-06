@@ -1,0 +1,8 @@
+- name:     Bump Metricbeat version in .env file
+  template:
+    src:   templates/.env.j2
+    dest:  "{{ metricbeat_dir }}/.env"
+    owner: "{{ metricbeat_user }}"
+    group: "{{ metricbeat_group }}"
+    mode:  "0744"
+

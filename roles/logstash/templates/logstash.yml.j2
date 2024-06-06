@@ -1,0 +1,18 @@
+#============================== Node identity ==============================
+node.name: {{ logstash_node_name | default( "reference-logstash" ) }}
+
+#============================== Logstash metrics server ====================
+api.enabled:     {{ logstash_api_enabled     | default( true ) }}
+api.http.host:   {{ logstash_api_http_host   | default( "0.0.0.0" ) }}
+api.http.port:   {{ logstash_api_http_port   | default( "9600" ) }}
+api.environment: {{ logstash_api_environment | default( "reference" ) }}
+
+#============================== XPack Monitoring ===========================
+xpack.monitoring.enabled: {{ logstash_monitoring_enabled | default( false ) }}
+
+xpack.monitoring.elasticsearch.hosts:    {{ logstash_monitoring_elasticsearch_hosts | default( "http://localhost:9200" ) }}
+xpack.monitoring.elasticsearch.username: {{ logstash_monitoring_elasticsearch_username | default( "elastic" ) }}
+xpack.monitoring.elasticsearch.password: {{ logstash_monitoring_elasticsearch_password | default( "no_password" ) }}
+
+xpack.monitoring.elasticsearch.ssl.certificate_authority: {{ logstash_monitoring_elasticsearch_ssl_certificate_authority | default( "/path/to/ca.crt" ) }}
+xpack.monitoring.elasticsearch.sniffing:                  true

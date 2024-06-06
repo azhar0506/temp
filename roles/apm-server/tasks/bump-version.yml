@@ -1,0 +1,7 @@
+- name:     Bump APM-Server version in .env file
+  template:
+    src:   templates/.env.j2
+    dest:  "{{ apm_server_dir }}/.env"
+    owner: "{{ apm_server_user }}"
+    group: "{{ apm_server_group }}"
+    mode:  "0744"

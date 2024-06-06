@@ -1,0 +1,178 @@
+# ========================== General ==========================================
+# The name of the shipper that publishes the network data. It can be used to group
+# all the transactions sent by a single shipper in the web interface.
+# If this options is not defined, the hostname is used.
+name: {{ metricbeat_name | default( "reference-metricbeat" ) }}
+
+# The tags of the shipper are included in their own field with each
+# transaction published. Tags make it easy to group servers by different
+# logical properties.
+tags: {{ metricbeat_tags | default( ["reference", "reigate"] ) }}
+
+system.hostfs: {{ metricbeat_system_module_hostfs | default( "/hostfs" ) }}
+
+logging.metrics.enabled: false
+
+
+#=========================== Internal metrics configuration ===================
+http.enabled: {{ metricbeat_http_enabled }}
+{% if metricbeat_http_enabled == true %}
+http.port:    5067
+{% endif %}
+
+
+#=========================== Kibana configuration =============================
+setup.kibana:
+    host:     {{ metricbeat_kibana_host | default( "mykibanahost:5601" ) }}
+    username: {{ metricbeat_kibana_username | default( "my_kibana_user" ) }}
+    password: {{ metricbeat_kibana_password | default( "my_kibana_password" ) }}
+
+    ssl.enabled:                 true
+    ssl.certificate_authorities: {{ metricbeat_kibana_ssl_certificate_authorities | default( "/etc/pki/root/ca.pem" ) }}
+    ssl.certificate:             {{ metricbeat_kibana_ssl_certificate | default( "/etc/pki/client/cert.pem" ) }}
+    ssl.key:                     {{ metricbeat_kibana_ssl_key | default( "/etc/pki/client/cert.key" ) }}
+
+# Should be present only on the first ever start of the metricbeat
+# After that all dashboards would be loaded and therefore setting can be disabled
+setup.dashboards.enabled: {{ metricbeat_setup_dashboards_enabled | default( false ) }}
+
+
+#=========================== Modules configuration ============================
+### Common modules
+metricbeat.modules:
+-   module:  system
+    enabled: true
+    metricsets:
+    - core            # Metrics are reported for each CPU core
+    - cpu             # CPU usage
+    - diskio          # Disk IO metrics
+    - filesystem      # File system statistics
+    - fsstat          # Overall file system statistics
+    - load            # CPU load averages
+    - memory          # Memory usage
+    - network         # Network IO
+    - network_summary # Network IO summary
+    - process         # Per process metrics
+    - process_summary # Process summary
+    - service         # Services statistic
+    - socket          # Socket statistic
+    - socket_summary  # Socket summary
+    - uptime          # System Uptime
+    - users           # Users statistic
+    period:    {{ metricbeat_system_module_period | default( "20s" ) }}
+    processes:
+    - .*
+    hostfs: {{ metricbeat_system_module_hostfs | default( "/hostfs" ) }}
+
+    # Configure the metric types that are included by these metricsets.
+    cpu.metrics:  # The other available option is ticks
+    - percentages
+    - normalized_percentages
+    core.metrics: # The other available option is ticks
+    - percentages
+
+-   module:  docker
+    enabled: true
+    metricsets:
+    - container
+    - cpu
+    - diskio
+    - event
+    - healthcheck
+    - image
+    - info
+    - memory
+    - network
+    hosts:
+    - unix:///var/run/docker.sock
+    period: {{ metricbeat_docker_module_period | default( "20s" ) }}
+
+    # If set to true, replace dots in labels with `_`.
+    labels.dedot: false
+
+-   module:  beat
+    enabled: true
+    metricsets:
+    - stats
+    - state
+    period:        {{ metricbeat_beat_module_period        | default( "20s" ) }}
+    # 5066 is APM-Server
+    # 5067 is Metricbeat itself
+    hosts:         {{ metricbeat_beat_module_hosts         | default( ["http://localhost:5066", "http://localhost:5067"] ) }}
+    xpack.enabled: true
+###
+
+### Individual modules
+{% if metricbeat_elastic_module_enabled == true %}
+-   module:    elasticsearch
+    enabled: {{ metricbeat_elastic_module_enabled }}
+    metricsets:
+    - ccr
+    - cluster_stats
+    - enrich
+    - index
+    - index_recovery
+    - index_summary
+    - ml_job
+    - node
+    - node_stats
+    - pending_tasks
+    - shard
+    scope:                       node
+    period:                      {{ metricbeat_elastic_module_period | default( "10s" ) }}
+    hosts:                       {{ metricbeat_elastic_module_hosts | default( "https://localhost:9200" ) }}
+    username:                    {{ metricbeat_elastic_module_username | default( "elastic" ) }}
+    password:                    {{ metricbeat_elastic_module_password | default( "changeme" ) }}
+    ssl.certificate_authorities: {{ metricbeat_elastic_module_certificate_authorities | default( "/etc/pki/root/ca.pem" ) }}
+    xpack.enabled:               {{ metricbeat_elasticsearch_module_xpack_enabled | default( "false" ) }}
+
+{% endif %}
+{% if metricbeat_kibana_module_enabled == true %}
+-   module:  kibana
+    enabled: {{ metricbeat_kibana_module_enabled }}
+    metricsets:
+    - stats
+    - status
+    period:                      {{ metricbeat_kibana_module_period | default( "10s" ) }}
+    hosts:                       {{ metricbeat_kibana_module_hosts | default( "https://localhost:9200" ) }}
+    username:                    {{ metricbeat_kibana_module_username | default( "elastic" ) }}
+    password:                    {{ metricbeat_kibana_module_password | default( "changeme" ) }}
+    ssl.certificate_authorities: {{ metricbeat_kibana_module_certificate_authorities | default( "/etc/pki/root/ca.pem" ) }}
+    xpack.enabled:               {{ metricbeat_kibana_module_xpack_enabled | default( "false" ) }}
+
+{% endif %}
+{% if metricbeat_logstash_module_enabled == true %}
+-   module:  logstash
+    enabled:       {{ metricbeat_logstash_module_enabled }}
+    {% if not metricbeat_logstash_module_xpack_enabled and metricbeat_logstash_module_enabled %}
+    metricsets:    ["node", "node_stats"]
+    {% endif %}
+period:        {{ metricbeat_logstash_module_period | default( "10s" ) }}
+    hosts:         {{ metricbeat_logstash_module_hosts | default( "https://localhost:9200" ) }}
+    xpack.enabled: {{ metricbeat_logstash_module_xpack_enabled | default( false ) }}
+{% endif %}
+
+
+#=========================== Processors configuration =============================
+processors:
+-   add_docker_metadata:  ~
+-   add_host_metadata:    ~
+-   add_process_metadata: ~
+
+
+#=========================== Output configuration =============================
+output.elasticsearch:
+    hosts:             {{ metricbeat_output_elasticsearch_hosts | default( ["https://elastic:9200"] ) }}
+    username:          {{ metricbeat_output_elasticsearch_username | default( "metricbeat_internal" ) }}
+    password:          {{ metricbeat_output_elasticsearch_password | default( "metricbeat_internal_password" ) }}
+
+    compression_level: {{ metricbeat_output_elasticsearch_compression_level | default( "3" ) }}
+
+    ssl.enabled:           true
+    ssl.verification_mode: full
+    ssl.supported_protocols:
+    - TLSv1.2
+    - TLSv1.3
+    ssl.certificate_authorities: {{ metricbeat_output_elasticsearch_certificate_authorities | default( "/etc/pki/root/ca.pem" ) }}
+    ssl.certificate:             {{ metricbeat_output_elasticsearch_certificate | default( "/etc/pki/client/cert.pem" ) }}
+    ssl.key:                     {{ metricbeat_output_elasticsearch_key | default( "/etc/pki/client/cert.key" ) }}

@@ -1,0 +1,109 @@
+# ====================================
+# Logstash pipeline that collects TEST WBC AUTH data from Kafka, then sends it to Elasticsearch index
+# There are 3 important enrichments happening:
+#   1. We add `network_type` field to understand what network customer is using (21C or 20C)
+#   2. We parse `tunnel-*-endpoint` attributes with custom Ruby script (parse_tunnel_attr.rb*) so those `tunnel-*-endpoint` are searchable in Elasticsearch
+#
+# *located in `extras` folder of this project
+# ====================================
+
+
+input {
+  {% for input in item.kafka_inputs %}
+kafka {
+    bootstrap_servers => "{{ input.kafka_bootstrap_servers | default("default") }}"
+    group_id          => "{{ input.pipeline_group_id       | default("default") }}"
+    client_id         => "{{ input.pipeline_client_id      | default("default") }}"
+    topics            => {{  input.kafka_topics            | default('["mna_default"]') }}
+
+    consumer_threads           => 1
+    sasl_kerberos_service_name => "kafka"
+    security_protocol          => "SASL_PLAINTEXT"
+    jaas_path                  => "{{ logstash_jaas_path | default("/usr/share/config/jaas.conf") }}"
+    kerberos_config            => "{{ logstash_kerberos_config_path | default("/usr/share/config/default.conf") }}"
+    auto_offset_reset          => "latest"
+
+    client_dns_lookup => "use_all_dns_ips"
+  }
+  {% endfor %}
+
+}
+
+filter {
+  csv {
+    columns => ["disposition_mode", "receipt_time", "event_timestamp", "server_host_name", "service_type", "calling_station_id", "radius_username", "base_user_name", "user_realm", "source_address", "source_port", "destination_address", "nas_port", "nas_ip_address", "nas_id", "nas_port_id", "tunnel_server_endpoint", "tunnel_client_auth_id", "framed_ip_netmask", "framed_pool", "framed_route", "framed_ip_address", "tmo_vpn_name", "alc_msap_serv_id", "redback_context_name", "jnpr_cos_parameter_type", "subscriber_qos_override", "subsc_prof_str", "sla_prof_str", "proxy_auth_server", "delegated_ipv6_pool", "alc_tunnel_serv_id", "filter_id", "tunnel_assignment_id", "delegated_ipv6_prefix", "dsl_actual_data_rate_downstream", "dsl_actual_data_rate_upstream", "bt_bb_line_id", "bt_bb_customer_id", "bt_bb_customer_cfsid", "bt_bb_resilience_mode", "bt_bb_special_service", "bt_vpn_selection_mode", "bt_primary_dns_server", "bt_secondary_dns_server", "erx_service_activate", "cisco_avpair", "class", "policy_name", "redback_dsl_encapsulation", "dsl_access_encapsulation", "downstream_rate_threshold_breached", "upstream_rate_threshold_breached", "redback_qos_rate_outbound", "reply_string", "qos_values", "connection_type", "client_type", "pf_rate_factor", "er_calc_param", "er_min_rate", "pf_min_rate", "indicator"]
+
+    separator => ","
+    convert => {
+      "receipt_time"    => "date"
+      "event_timestamp" => "date"
+    }
+
+    convert => {
+      "data_rate_upstream"   => "integer"
+      "data_rate_downstream" => "integer"
+    }
+  }
+
+  date {
+    match => [ "event_timestamp", "yyyy/MM/dd HH:mm:ss.SSS" ]
+  }
+  date {
+    match => [ "receipt_time",    "yyyy/MM/dd HH:mm:ss.SSS" ]
+  }
+
+  # Sometimes Logstash reads in old messages from Kafka topics and that breaks indexing into Elasticsearch
+  # because of ILM policy that makes indices of 7 days old read-only
+  ruby {
+    init => "require 'time'"
+    code => "
+              event_timestamp = event.get('event_timestamp')
+              unless event_timestamp.nil?
+                if ( Time.now.to_i - Time.parse(event_timestamp).to_i ) > 691200
+                  event.cancel
+                end
+              end
+          "
+  }
+
+  mutate {
+    uppercase => [ "calling_station_id" ]
+  }
+  mutate {
+    lowercase => [ "upstream_rate_threshold_breached" ]
+  }
+  mutate {
+    lowercase => [ "downstream_rate_threshold_breached" ]
+  }
+
+  if [calling_station_id] =~ /BBIP.*|FTIP.*/ {
+    mutate { add_field => { "network_type" => "20C" } }
+  } else if [calling_station_id] =~ /BBEU.*/ {
+    mutate { add_field => { "network_type" => "21C" } }
+  } else if [calling_station_id] =~ /SELENIUM.*/ {
+    mutate { add_field => { "network_type" => "heartbeat" } }
+  } else {
+    mutate { add_field => { "network_type" => "unknown" } }
+  }
+
+  # Raw tunnel attributes look ugly, so we need to parse them to make them searchable in Elasticsearch
+  ruby {
+    path => "/usr/share/logstash/pipeline/parse_tunnel_attr.rb"
+  }
+
+  mutate {
+    remove_field => [ "message", "tunnel_client_endpoint" ]
+  }
+}
+
+output {
+  elasticsearch {
+    hosts    => {{ logstash_output_elasticsearch_hosts | default("") }}
+    index    => "auth-wbc-%{+YYYY.MM.dd}"
+    user     => "{{ logstash_output_elasticsearch_username | default("elastic") }}"
+    password => "{{ logstash_output_elasticsearch_password | default("no_password") }}"
+
+    ssl_enabled                 => true
+    ssl_certificate_authorities => "{{ logstash_output_elasticsearch_ssl_certificate_authority | default("/usr/share/logstash/ca.crt") }}"
+  }
+}

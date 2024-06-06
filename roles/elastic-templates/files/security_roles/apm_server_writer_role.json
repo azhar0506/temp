@@ -1,0 +1,37 @@
+{
+  "cluster" : [
+    "monitor",
+    "read_ilm",
+    "read_pipeline"
+  ],
+  "indices" : [
+    {
+      "names" : [
+        "*apm*"
+      ],
+      "privileges" : [
+        "auto_configure",
+        "create_doc",
+        "create_index",
+        "manage",
+        "view_index_metadata"
+      ],
+      "field_security" : {
+        "grant" : [
+          "*"
+        ],
+        "except" : [ ]
+      },
+      "allow_restricted_indices" : false
+    }
+  ],
+  "applications" : [ ],
+  "run_as" : [ ],
+	"metadata": {
+		"version":     3,
+		"description": "Deployed with Ansible"
+	},
+  "transient_metadata" : {
+    "enabled" : true
+  }
+}

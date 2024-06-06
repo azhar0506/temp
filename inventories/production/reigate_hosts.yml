@@ -1,0 +1,758 @@
+###
+# Reigate ELK Cluster
+# Reigate site is SECONDARY, though it is used same as Tinsley
+###
+all:
+  children:
+    ssl_nodes:
+      hosts:
+        10.54.22.97:
+        10.54.22.230:
+        10.54.22.231:
+        10.54.22.232:
+        10.54.22.233:
+        10.54.22.234:
+        10.54.35.166:
+
+    elastic_nodes:
+      hosts:
+        10.54.22.97:
+          elastic_cluster_name: production-reigate-cluster
+          elastic_publish_host: node1.reigate.elk.radius.nat.bt.com
+          elastic_discovery_hosts:
+          - node6.reigate.elk.radius.nat.bt.com
+          - node5.reigate.elk.radius.nat.bt.com
+          - node4.reigate.elk.radius.nat.bt.com
+          - node3.reigate.elk.radius.nat.bt.com
+          - node2.reigate.elk.radius.nat.bt.com
+          elastic_discovery_seed_hosts:
+          - node5.reigate.elk.radius.nat.bt.com  
+          - node2.reigate.elk.radius.nat.bt.com  
+          elastic_cluster_initial_master_nodes:
+          - elastic5
+          - elastic2
+          elastic_security_transport_filter_enabled: true
+          elastic_security_transport_filter_allow:
+          - 10.54.22.97
+          - 10.54.22.230
+          - 10.54.22.231
+          - 10.54.22.232
+          - 10.54.22.233
+          - 10.54.22.234
+          elastic_security_http_filter_enabled: true
+          elastic_security_http_filter_allow:
+          - 10.54.22.97
+          - 10.54.22.230
+          - 10.54.22.231
+          - 10.54.22.232
+          - 10.54.22.233
+          - 10.54.22.234
+          - 10.54.35.166
+          elastic_node_roles:   ["master"]
+          elastic_node_name:    elastic1
+          elastic_tag:          master
+          elastic_memory_limit: 10g
+          elastic_jvm_memory:   10g
+        10.54.22.230:
+          elastic_cluster_name: production-reigate-cluster
+          elastic_publish_host: node2.reigate.elk.radius.nat.bt.com
+          elastic_discovery_hosts:
+          - node6.reigate.elk.radius.nat.bt.com
+          - node5.reigate.elk.radius.nat.bt.com
+          - node4.reigate.elk.radius.nat.bt.com
+          - node3.reigate.elk.radius.nat.bt.com
+          - node1.reigate.elk.radius.nat.bt.com
+          elastic_discovery_seed_hosts:
+          - node5.reigate.elk.radius.nat.bt.com  
+          - node1.reigate.elk.radius.nat.bt.com  
+          elastic_cluster_initial_master_nodes:
+          - elastic5
+          - elastic1
+          elastic_security_transport_filter_enabled: true
+          elastic_security_transport_filter_allow:
+          - 10.54.22.97
+          - 10.54.22.230
+          - 10.54.22.231
+          - 10.54.22.232
+          - 10.54.22.233
+          - 10.54.22.234
+          elastic_security_http_filter_enabled: true
+          elastic_security_http_filter_allow:
+          - 10.54.22.97
+          - 10.54.22.230
+          - 10.54.22.231
+          - 10.54.22.232
+          - 10.54.22.233
+          - 10.54.22.234
+          - 10.54.35.166
+          elastic_node_roles:     ["master", "ml"]
+          elastic_node_name:      elastic2
+          elastic_tag:            master
+          elastic_xpack_ml_limit: "30g"
+          elastic_memory_limit:   12g
+          elastic_jvm_memory:     12g
+        10.54.22.231:
+          elastic_cluster_name: production-reigate-cluster
+          elastic_publish_host: node3.reigate.elk.radius.nat.bt.com
+          elastic_discovery_hosts:
+          - node6.reigate.elk.radius.nat.bt.com
+          - node5.reigate.elk.radius.nat.bt.com
+          - node4.reigate.elk.radius.nat.bt.com
+          - node2.reigate.elk.radius.nat.bt.com
+          - node1.reigate.elk.radius.nat.bt.com
+          elastic_discovery_seed_hosts:
+          - node5.reigate.elk.radius.nat.bt.com  
+          - node2.reigate.elk.radius.nat.bt.com  
+          - node1.reigate.elk.radius.nat.bt.com  
+          elastic_cluster_initial_master_nodes:
+          - elastic5
+          - elastic2
+          - elastic1
+          elastic_security_transport_filter_enabled: true
+          elastic_security_transport_filter_allow:
+          - 10.54.22.97
+          - 10.54.22.230
+          - 10.54.22.231
+          - 10.54.22.232
+          - 10.54.22.233
+          - 10.54.22.234
+          elastic_security_http_filter_enabled: true
+          elastic_security_http_filter_allow:
+          - 10.54.22.97
+          - 10.54.22.230
+          - 10.54.22.231
+          - 10.54.22.232
+          - 10.54.22.233
+          - 10.54.22.234
+          - 10.54.35.166
+          elastic_node_roles: ["data"]
+          elastic_node_name:  elastic3
+          elastic_tag:        data
+        10.54.22.232:
+          elastic_cluster_name: production-reigate-cluster
+          elastic_publish_host: node4.reigate.elk.radius.nat.bt.com
+          elastic_discovery_hosts:
+          - node6.reigate.elk.radius.nat.bt.com
+          - node5.reigate.elk.radius.nat.bt.com
+          - node3.reigate.elk.radius.nat.bt.com
+          - node2.reigate.elk.radius.nat.bt.com
+          - node1.reigate.elk.radius.nat.bt.com
+          elastic_discovery_seed_hosts:
+          - node5.reigate.elk.radius.nat.bt.com  
+          - node2.reigate.elk.radius.nat.bt.com  
+          - node1.reigate.elk.radius.nat.bt.com  
+          elastic_cluster_initial_master_nodes:
+          - elastic5
+          - elastic2
+          - elastic1
+          elastic_security_transport_filter_enabled: true
+          elastic_security_transport_filter_allow:
+          - 10.54.22.97
+          - 10.54.22.230
+          - 10.54.22.231
+          - 10.54.22.232
+          - 10.54.22.233
+          - 10.54.22.234
+          elastic_security_http_filter_enabled: true
+          elastic_security_http_filter_allow:
+          - 10.54.22.97
+          - 10.54.22.230
+          - 10.54.22.231
+          - 10.54.22.232
+          - 10.54.22.233
+          - 10.54.22.234
+          - 10.54.35.166
+          elastic_node_roles: ["data"]
+          elastic_node_name:  elastic4
+          elastic_tag:        data
+        10.54.22.233:
+          elastic_cluster_name: production-reigate-cluster
+          elastic_publish_host: node5.reigate.elk.radius.nat.bt.com
+          elastic_discovery_hosts:
+          - node6.reigate.elk.radius.nat.bt.com
+          - node4.reigate.elk.radius.nat.bt.com
+          - node3.reigate.elk.radius.nat.bt.com
+          - node2.reigate.elk.radius.nat.bt.com
+          - node1.reigate.elk.radius.nat.bt.com
+          elastic_discovery_seed_hosts:
+          - node2.reigate.elk.radius.nat.bt.com  
+          - node1.reigate.elk.radius.nat.bt.com  
+          elastic_cluster_initial_master_nodes:
+          - elastic2
+          - elastic1
+          elastic_security_transport_filter_enabled: true
+          elastic_security_transport_filter_allow:
+          - 10.54.22.97
+          - 10.54.22.230
+          - 10.54.22.231
+          - 10.54.22.232
+          - 10.54.22.233
+          - 10.54.22.234
+          elastic_security_http_filter_enabled: false
+          elastic_reindex_remote_whitelist:     "node5.tinsley.elk.radius.nat.bt.com:61116"
+          elastic_node_roles:     ["ingest", "master", "ml", "voting_only"]
+          elastic_node_name:      elastic5
+          elastic_tag:            master
+          elastic_xpack_ml_limit: "30g"
+          elastic_memory_limit:   12g
+          elastic_jvm_memory:     12g
+        10.54.22.234:
+          elastic_cluster_name: production-reigate-cluster
+          elastic_publish_host: node6.reigate.elk.radius.nat.bt.com
+          elastic_discovery_hosts:
+          - node5.reigate.elk.radius.nat.bt.com
+          - node4.reigate.elk.radius.nat.bt.com
+          - node3.reigate.elk.radius.nat.bt.com
+          - node2.reigate.elk.radius.nat.bt.com
+          - node1.reigate.elk.radius.nat.bt.com
+          elastic_discovery_seed_hosts:
+          - node5.reigate.elk.radius.nat.bt.com  
+          - node2.reigate.elk.radius.nat.bt.com  
+          - node1.reigate.elk.radius.nat.bt.com  
+          elastic_cluster_initial_master_nodes:
+          - elastic5
+          - elastic2
+          - elastic1
+          elastic_security_transport_filter_enabled: true
+          elastic_security_transport_filter_allow:
+          - 10.54.22.97
+          - 10.54.22.230
+          - 10.54.22.231
+          - 10.54.22.232
+          - 10.54.22.233
+          - 10.54.22.234
+          elastic_security_http_filter_enabled: true
+          elastic_security_http_filter_allow:
+          - 10.54.22.97
+          - 10.54.22.234
+          - 10.54.22.234
+          - 10.54.22.234
+          - 10.54.22.234
+          - 10.54.22.234
+          - 10.54.35.166
+          elastic_node_roles: ["data"]
+          elastic_node_name:  elastic6
+          elastic_tag:        data
+
+    kibana_nodes:
+      hosts:
+        10.54.35.166:
+          install_kibana: true
+          deploy_spaces:  false
+
+          import_saved_objects:    false
+          import_ops_objects:      false
+          import_radius_objects:   false
+          import_external_objects: false
+          
+          extra_secrets_file: "reigate_secrets.yml"
+          kibana_server_name: "production_reigate_kibana"
+          kibana_monitoring_elasticsearch_host: []
+          kibana_elasticsearch_hosts:
+          - "https://node1.reigate.elk.radius.nat.bt.com:61116"
+          - "https://node2.reigate.elk.radius.nat.bt.com:61116"
+          - "https://node5.reigate.elk.radius.nat.bt.com:61116"
+          kibana_server_public_base_url: "https://kibana.reigate.elk.radius.nat.bt.com:8080"
+
+          kibana_xpack_proxy_url: "http://cloudproxy-r.nat.bt.com:8080"
+
+          kibana_spaces_list:
+            - { action: "update", space_id: "ops-view",      space_name: "Operations Team Space", space_description: "This space designed for RADIUS OPS Team. Identical to the `Default` space. Created with Ansible, so don't alter manually", space_color: "#5DDCFF", space_initials: "OP", space_disabled_features: ["enterpriseSearch", "graph", "ml",  "siem"] }
+            - { action: "update", space_id: "radius-view",   space_name: "RADIUS Team Space",    space_description: "This space designed for Non-OPS RADIUS Team. Created with Ansible, so don't alter manually",               space_color: "#5DDCFF", space_initials: "RS", space_disabled_features: ["actions", "advancedSettings", "apm", "dev_tools", "enterpriseSearch", "fleet", "graph", "indexPatterns", "infrastructure", "logs", "ml", "monitoring", "observabilityCases", "osquery", "siem", "stackAlerts", "uptime"] }
+            - { action: "update", space_id: "external-view", space_name: "External Teams Space", space_description: "This space designed for Teams that are external to RADIUS. Created with Ansible, so don't alter manually", space_color: "#5DDCFF", space_initials: "EX", space_disabled_features: ["actions", "advancedSettings", "apm", "dev_tools", "enterpriseSearch", "fleet", "graph", "indexPatterns", "infrastructure", "logs", "ml", "monitoring", "observabilityCases", "osquery", "siem", "stackAlerts", "uptime", "canvas", "maps", "securitySolutionCases", "savedObjectsManagement", "savedObjectsTagging", "generalCases", "fleetv2"] }
+
+          import_ops_ad_settings:    false
+          import_ops_dashboards:     false
+          import_ops_data_views:     false
+          import_ops_kibana_tags:    false
+          import_ops_visualisations: false
+
+          import_radius_ad_settings:    false
+          import_radius_dashboards:     false
+          import_radius_data_views:     false
+          import_radius_kibana_tags:    false
+          import_radius_visualisations: false
+
+          import_external_ad_settings:    false
+          import_external_dashboards:     false
+          import_external_data_views:     false
+          import_external_kibana_tags:    false
+          import_external_visualisations: false
+
+    logstash_nodes:
+      hosts:
+        10.54.22.97:
+          logstash_node_name:        reigate-prod-logstash
+          logstash_cluster_location: reigate
+          logstash_dir:              /configdata/logstash-docker
+          logstash_output_elasticsearch_hosts:
+            - https://node1.reigate.elk.radius.nat.bt.com:61116
+            - https://node2.reigate.elk.radius.nat.bt.com:61116
+            - https://node5.reigate.elk.radius.nat.bt.com:61116
+          logstash_monitoring_elasticsearch_hosts:
+            - https://node1.reigate.elk.radius.nat.bt.com:61116
+            - https://node2.reigate.elk.radius.nat.bt.com:61116
+            - https://node5.reigate.elk.radius.nat.bt.com:61116
+          # Group IDs
+          reigate_logstash_auth_accept_mna_kafka_group_id:  mygrp-app06936_authaccept_re_logstash_prod_reader
+          reigate_logstash_auth_reject_mna_kafka_group_id:  mygrp-app06936_authreject_re_logstash_prod_reader
+          reigate_logstash_auth_accept_wbc_kafka_group_id:  mygrp-app03032_authaccept_re_logstash_prod_reader
+          reigate_logstash_auth_reject_wbc_kafka_group_id:  mygrp-app03032_authreject_re_logstash_prod_reader
+          reigate_logstash_auth_accept_wbmc_kafka_group_id: mygrp-app03032_authaccept_re_logstash_prod_reader
+          reigate_logstash_auth_reject_wbmc_kafka_group_id: mygrp-app03032_authreject_re_logstash_prod_reader
+
+          reigate_logstash_pipeline_main_kafka_group_id:         mygrp-app06936-elasticsearch-reader
+          reigate_logstash_pipeline_session_data_kafka_group_id: mygrp-app03032_elastic-noctools_reader
+          reigate_logstash_pipeline_geoip_data_kafka_group_id:   mygrp-app06936_elastic-dev_reader
+
+          reigate_logstash_pipeline_aaa_wbc_metrics_kafka_group_id:  mygrp-app03032-elasticsearch-reader
+          reigate_logstash_pipeline_aaa_wbmc_metrics_kafka_group_id: mygrp-app03032-elasticsearch-reader
+          reigate_logstash_pipeline_aaa_mnaw_metrics_kafka_group_id: mygrp-app03032-elasticsearch-reader
+          reigate_logstash_pipeline_aaa_wbc_policy_kafka_group_id:   mygrp-app03032-elasticsearch-reader
+          reigate_logstash_pipeline_aaa_wbc_debug_kafka_group_id:    mygrp-app03032-elasticsearch-reader
+
+          reigate_logstash_pipeline_metricbeat_metrics_kafka_group_id: mygrp-app03032-elasticsearch-reader
+
+          tinsley_logstash_auth_accept_mna_kafka_group_id:  mygrp-app06936_authaccept_re_logstash_prod_reader
+          tinsley_logstash_auth_reject_mna_kafka_group_id:  mygrp-app06936_authreject_re_logstash_prod_reader
+          tinsley_logstash_auth_accept_wbc_kafka_group_id:  mygrp-app03032_authaccept_re_logstash_prod_reader
+          tinsley_logstash_auth_reject_wbc_kafka_group_id:  mygrp-app03032_authreject_re_logstash_prod_reader
+          tinsley_logstash_auth_accept_wbmc_kafka_group_id: mygrp-app03032_authaccept_re_logstash_prod_reader
+          tinsley_logstash_auth_reject_wbmc_kafka_group_id: mygrp-app03032_authreject_re_logstash_prod_reader
+
+          tinsley_logstash_pipeline_main_kafka_group_id:         mygrp-app06936-elasticsearch-reader
+          tinsley_logstash_pipeline_session_data_kafka_group_id: mygrp-app03032_elastic-noctools_reader
+          tinsley_logstash_pipeline_geoip_data_kafka_group_id:   mygrp-app06936_elastic-dev_reader
+
+          tinsley_logstash_pipeline_aaa_wbc_metrics_kafka_group_id:  mygrp-app03032-elasticsearch-reader
+          tinsley_logstash_pipeline_aaa_wbmc_metrics_kafka_group_id: mygrp-app03032-elasticsearch-reader
+          tinsley_logstash_pipeline_aaa_mnaw_metrics_kafka_group_id: mygrp-app03032-elasticsearch-reader
+          tinsley_logstash_pipeline_aaa_wbc_policy_kafka_group_id:   mygrp-app03032-elasticsearch-reader
+          tinsley_logstash_pipeline_aaa_wbc_debug_kafka_group_id:    mygrp-app03032-elasticsearch-reader
+
+          tinsley_logstash_pipeline_metricbeat_metrics_kafka_group_id: mygrp-app03032-elasticsearch-reader
+
+          # Client/consumer IDs
+          tinsley_logstash_auth_accept_mna_kafka_client_id:  auth-mnar-accept-reigate-production-logstash
+          tinsley_logstash_auth_reject_mna_kafka_client_id:  auth-mnar-reject-reigate-production-logstash
+          tinsley_logstash_auth_accept_wbc_kafka_client_id:  auth-btw-accept-reigate-production-logstash
+          tinsley_logstash_auth_reject_wbc_kafka_client_id:  auth-btw-reject-reigate-production-logstash
+          tinsley_logstash_auth_accept_wbmc_kafka_client_id: auth-wbmc-accept-reigate-production-logstash
+          tinsley_logstash_auth_reject_wbmc_kafka_client_id: auth-wbmc-reject-reigate-production-logstash
+
+          tinsley_logstash_pipeline_main_kafka_wbc_client_id:     acct-btw-reigate-production-logstash
+          tinsley_logstash_pipeline_main_kafka_mna_client_id:     acct-mnar-reigate-production-logstash
+          tinsley_logstash_pipeline_geoip_data_kafka_client_id:   acct-btw-geoip-reigate-production-logstash
+          tinsley_logstash_pipeline_session_data_kafka_client_id: acct-btw-session-reigate-production-logstash
+
+          tinsley_logstash_pipeline_aaa_wbc_metrics_kafka_client_id:  aaa-wbc-metrics-reigate-production-logstash
+          tinsley_logstash_pipeline_aaa_wbmc_metrics_kafka_client_id: aaa-wbmc-metrics-reigate-production-logstash
+          tinsley_logstash_pipeline_aaa_mnaw_metrics_kafka_client_id: aaa-mnaw-metrics-reigate-production-logstash
+          tinsley_logstash_pipeline_aaa_wbc_policy_kafka_client_id:   aaa-wbc-policy-reigate-production-logstash
+          tinsley_logstash_pipeline_aaa_wbc_debug_kafka_client_id:    aaa-wbc-debug-reigate-production-logstash
+
+          reigate_logstash_auth_accept_mna_kafka_client_id:  auth-mnar-accept-reigate-production-logstash
+          reigate_logstash_auth_reject_mna_kafka_client_id:  auth-mnar-reject-reigate-production-logstash
+          reigate_logstash_auth_accept_wbc_kafka_client_id:  auth-btw-accept-reigate-production-logstash
+          reigate_logstash_auth_reject_wbc_kafka_client_id:  auth-btw-reject-reigate-production-logstash
+          reigate_logstash_auth_accept_wbmc_kafka_client_id: auth-wbmc-accept-reigate-production-logstash
+          reigate_logstash_auth_reject_wbmc_kafka_client_id: auth-wbmc-reject-reigate-production-logstash
+
+          reigate_logstash_pipeline_main_kafka_wbc_client_id:     acct-btw-reigate-production-logstash
+          reigate_logstash_pipeline_main_kafka_mna_client_id:     acct-mnar-reigate-production-logstash
+          reigate_logstash_pipeline_geoip_data_kafka_client_id:   acct-btw-geoip-reigate-production-logstash
+          reigate_logstash_pipeline_session_data_kafka_client_id: acct-btw-session-reigate-production-logstash
+
+          reigate_logstash_pipeline_aaa_wbc_metrics_kafka_client_id:  aaa-wbc-metrics-reigate-production-logstash
+          reigate_logstash_pipeline_aaa_wbmc_metrics_kafka_client_id: aaa-wbmc-metrics-reigate-production-logstash
+          reigate_logstash_pipeline_aaa_mnaw_metrics_kafka_client_id: aaa-mnaw-metrics-reigate-production-logstash
+          reigate_logstash_pipeline_aaa_wbc_policy_kafka_client_id:   aaa-wbc-policy-reigate-production-logstash
+          reigate_logstash_pipeline_aaa_wbc_debug_kafka_client_id:    aaa-wbc-debug-reigate-production-logstash
+
+
+          logstash_pipelines_list:
+            - { template_name: "aaa_metrics_kafka", final_name: "aaa_metrics_kafka_reigate", kafka_inputs: [{id: "wbc", kafka_bootstrap_servers: "{{reigate_logstash_kafka_bootstrap_servers}}", pipeline_group_id: "{{reigate_logstash_pipeline_aaa_wbc_metrics_kafka_group_id}}", pipeline_client_id: "{{reigate_logstash_pipeline_aaa_wbc_metrics_kafka_client_id}}", kafka_topics: "{{reigate_logstash_kafka_aaa_wbc_metrics_topic}}", consumer_threads: 4}, {id: "wbmc", kafka_bootstrap_servers: "{{reigate_logstash_kafka_bootstrap_servers}}", pipeline_group_id: "{{reigate_logstash_pipeline_aaa_wbmc_metrics_kafka_group_id}}", pipeline_client_id: "{{reigate_logstash_pipeline_aaa_wbmc_metrics_kafka_client_id}}", kafka_topics: "{{reigate_logstash_kafka_aaa_wbmc_metrics_topic}}", consumer_threads: 4}, {id: "mnaw", kafka_bootstrap_servers: "{{reigate_logstash_kafka_bootstrap_servers}}", pipeline_group_id: "{{reigate_logstash_pipeline_aaa_mnaw_metrics_kafka_group_id}}", pipeline_client_id: "{{reigate_logstash_pipeline_aaa_mnaw_metrics_kafka_client_id}}", kafka_topics: "{{reigate_logstash_kafka_aaa_mnaw_metrics_topic}}", consumer_threads: 4}]}
+            - { template_name: "aaa_metrics_kafka", final_name: "aaa_metrics_kafka_tinsley", kafka_inputs: [{id: "wbc", kafka_bootstrap_servers: "{{tinsley_logstash_kafka_bootstrap_servers}}", pipeline_group_id: "{{tinsley_logstash_pipeline_aaa_wbc_metrics_kafka_group_id}}", pipeline_client_id: "{{tinsley_logstash_pipeline_aaa_wbc_metrics_kafka_client_id}}", kafka_topics: "{{tinsley_logstash_kafka_aaa_wbc_metrics_topic}}", consumer_threads: 4}, {id: "wbmc", kafka_bootstrap_servers: "{{tinsley_logstash_kafka_bootstrap_servers}}", pipeline_group_id: "{{tinsley_logstash_pipeline_aaa_wbmc_metrics_kafka_group_id}}", pipeline_client_id: "{{tinsley_logstash_pipeline_aaa_wbmc_metrics_kafka_client_id}}", kafka_topics: "{{tinsley_logstash_kafka_aaa_wbmc_metrics_topic}}", consumer_threads: 4}, {id: "mnaw", kafka_bootstrap_servers: "{{tinsley_logstash_kafka_bootstrap_servers}}", pipeline_group_id: "{{tinsley_logstash_pipeline_aaa_mnaw_metrics_kafka_group_id}}", pipeline_client_id: "{{tinsley_logstash_pipeline_aaa_mnaw_metrics_kafka_client_id}}", kafka_topics: "{{tinsley_logstash_kafka_aaa_mnaw_metrics_topic}}", consumer_threads: 4}]}
+
+            - { template_name: "aaa_debug_logs_kafka_to_es", final_name: "aaa_debug_logs_kafka_reigate", kafka_inputs: [{id: "wbc", kafka_bootstrap_servers: "{{reigate_logstash_kafka_bootstrap_servers}}", pipeline_group_id: "{{reigate_logstash_pipeline_aaa_wbc_debug_kafka_group_id}}", pipeline_client_id: "{{reigate_logstash_pipeline_aaa_wbc_debug_kafka_client_id}}", kafka_topics: "{{reigate_logstash_kafka_aaa_wbc_debug_topics}}"}]}
+            - { template_name: "aaa_debug_logs_kafka_to_es", final_name: "aaa_debug_logs_kafka_tinsley", kafka_inputs: [{id: "wbc", kafka_bootstrap_servers: "{{tinsley_logstash_kafka_bootstrap_servers}}", pipeline_group_id: "{{tinsley_logstash_pipeline_aaa_wbc_debug_kafka_group_id}}", pipeline_client_id: "{{tinsley_logstash_pipeline_aaa_wbc_debug_kafka_client_id}}", kafka_topics: "{{tinsley_logstash_kafka_aaa_wbc_debug_topics}}"}]}
+
+            - { template_name: "aaa_policy_logs_kafka_to_es", final_name: "aaa_policy_logs_kafka_reigate", kafka_inputs: [{id: "wbc", kafka_bootstrap_servers: "{{reigate_logstash_kafka_bootstrap_servers}}", pipeline_group_id: "{{reigate_logstash_pipeline_aaa_wbc_policy_kafka_group_id}}", pipeline_client_id: "{{reigate_logstash_pipeline_aaa_wbc_policy_kafka_client_id}}", kafka_topics: "{{reigate_logstash_kafka_aaa_wbc_policy_topics}}"}]}
+            - { template_name: "aaa_policy_logs_kafka_to_es", final_name: "aaa_policy_logs_kafka_tinsley", kafka_inputs: [{id: "wbc", kafka_bootstrap_servers: "{{tinsley_logstash_kafka_bootstrap_servers}}", pipeline_group_id: "{{tinsley_logstash_pipeline_aaa_wbc_policy_kafka_group_id}}", pipeline_client_id: "{{tinsley_logstash_pipeline_aaa_wbc_policy_kafka_client_id}}", kafka_topics: "{{tinsley_logstash_kafka_aaa_wbc_policy_topics}}"}]}
+
+            - { template_name: "acct_wbc_session_kafka", final_name: "acct_wbc_session_kafka_reigate", kafka_bootstrap_servers: "{{reigate_logstash_kafka_bootstrap_servers}}", pipeline_group_id: "{{reigate_logstash_pipeline_session_data_kafka_group_id}}", pipeline_client_id: "{{reigate_logstash_pipeline_session_data_kafka_client_id}}", kafka_topics: "{{reigate_logstash_kafka_wbc_topics}}" }
+            - { template_name: "acct_wbc_session_kafka", final_name: "acct_wbc_session_kafka_tinsley", kafka_bootstrap_servers: "{{tinsley_logstash_kafka_bootstrap_servers}}", pipeline_group_id: "{{tinsley_logstash_pipeline_session_data_kafka_group_id}}", pipeline_client_id: "{{tinsley_logstash_pipeline_session_data_kafka_client_id}}", kafka_topics: "{{tinsley_logstash_kafka_wbc_topics}}" }
+
+            - { template_name: "metricbeat_metrics_kafka", final_name: "metricbeat_metrics_kafka_reigate", kafka_bootstrap_servers: "{{reigate_logstash_kafka_bootstrap_servers}}", pipeline_group_id: "{{reigate_logstash_pipeline_metricbeat_metrics_kafka_group_id}}", pipeline_client_id: "{{reigate_logstash_pipeline_metricbeat_metrics_kafka_client_id}}", kafka_topics: "{{reigate_logstash_kafka_metricbeat_metrics_topics}}" }
+            - { template_name: "metricbeat_metrics_kafka", final_name: "metricbeat_metrics_kafka_tinsley", kafka_bootstrap_servers: "{{tinsley_logstash_kafka_bootstrap_servers}}", pipeline_group_id: "{{reigate_logstash_pipeline_metricbeat_metrics_kafka_group_id}}", pipeline_client_id: "{{tinsley_logstash_pipeline_metricbeat_metrics_kafka_client_id}}", kafka_topics: "{{tinsley_logstash_kafka_metricbeat_metrics_topics}}" }
+
+            - { template_name: "acct_kafka",     final_name: "acct_kafka_reigate",     kafka_inputs: [{type: "wbc", kafka_bootstrap_servers: "{{reigate_logstash_kafka_bootstrap_servers}}", pipeline_group_id: "{{reigate_logstash_pipeline_main_kafka_group_id}}", pipeline_client_id: "{{reigate_logstash_pipeline_main_kafka_wbc_client_id}}", kafka_topics: "{{reigate_logstash_kafka_wbc_topics}}"}, {type: "mna", kafka_bootstrap_servers: "{{reigate_logstash_kafka_bootstrap_servers}}", pipeline_group_id: "{{reigate_logstash_pipeline_main_kafka_group_id}}", pipeline_client_id: "{{reigate_logstash_pipeline_main_kafka_mna_client_id}}", kafka_topics: "{{reigate_logstash_kafka_mna_topics}}"}]}
+            - { template_name: "acct_kafka",     final_name: "acct_kafka_tinsley",     kafka_inputs: [{type: "wbc", kafka_bootstrap_servers: "{{tinsley_logstash_kafka_bootstrap_servers}}", pipeline_group_id: "{{tinsley_logstash_pipeline_main_kafka_group_id}}", pipeline_client_id: "{{tinsley_logstash_pipeline_main_kafka_wbc_client_id}}", kafka_topics: "{{tinsley_logstash_kafka_wbc_topics}}"}, {type: "mna", kafka_bootstrap_servers: "{{tinsley_logstash_kafka_bootstrap_servers}}", pipeline_group_id: "{{tinsley_logstash_pipeline_main_kafka_group_id}}", pipeline_client_id: "{{tinsley_logstash_pipeline_main_kafka_mna_client_id}}", kafka_topics: "{{tinsley_logstash_kafka_mna_topics}}"}]}
+
+            - { template_name: "auth_mna_kafka", final_name: "auth_mna_kafka_reigate", kafka_inputs: [{kafka_bootstrap_servers: "{{reigate_logstash_kafka_bootstrap_servers}}", pipeline_group_id: "{{reigate_logstash_auth_accept_mna_kafka_group_id}}", pipeline_client_id: "{{reigate_logstash_auth_accept_mna_kafka_client_id}}", kafka_topics: "{{reigate_logstash_auth_accept_mna_kafka_topics}}"}, {kafka_bootstrap_servers: "{{reigate_logstash_kafka_bootstrap_servers}}", pipeline_group_id: "{{reigate_logstash_auth_reject_mna_kafka_group_id}}", pipeline_client_id: "{{reigate_logstash_auth_reject_mna_kafka_client_id}}", kafka_topics: "{{reigate_logstash_auth_reject_mna_kafka_topics}}"}]}
+            - { template_name: "auth_mna_kafka", final_name: "auth_mna_kafka_tinsley", kafka_inputs: [{kafka_bootstrap_servers: "{{tinsley_logstash_kafka_bootstrap_servers}}", pipeline_group_id: "{{tinsley_logstash_auth_accept_mna_kafka_group_id}}", pipeline_client_id: "{{tinsley_logstash_auth_accept_mna_kafka_client_id}}", kafka_topics: "{{tinsley_logstash_auth_accept_mna_kafka_topics}}"}, {kafka_bootstrap_servers: "{{tinsley_logstash_kafka_bootstrap_servers}}", pipeline_group_id: "{{tinsley_logstash_auth_reject_mna_kafka_group_id}}", pipeline_client_id: "{{tinsley_logstash_auth_reject_mna_kafka_client_id}}", kafka_topics: "{{tinsley_logstash_auth_reject_mna_kafka_topics}}"}]}
+
+            - { template_name: "auth_wbc_kafka", final_name: "auth_wbc_kafka_reigate", kafka_inputs: [{kafka_bootstrap_servers: "{{reigate_logstash_kafka_bootstrap_servers}}", pipeline_group_id: "{{reigate_logstash_auth_accept_wbc_kafka_group_id}}", pipeline_client_id: "{{reigate_logstash_auth_accept_wbc_kafka_client_id}}", kafka_topics: "{{reigate_logstash_auth_accept_wbc_kafka_topics}}"}, {kafka_bootstrap_servers: "{{reigate_logstash_kafka_bootstrap_servers}}", pipeline_group_id: "{{reigate_logstash_auth_reject_wbc_kafka_group_id}}", pipeline_client_id: "{{reigate_logstash_auth_reject_wbc_kafka_client_id}}", kafka_topics: "{{reigate_logstash_auth_reject_wbc_kafka_topics}}"}]}
+            - { template_name: "auth_wbc_kafka", final_name: "auth_wbc_kafka_tinsley", kafka_inputs: [{kafka_bootstrap_servers: "{{tinsley_logstash_kafka_bootstrap_servers}}", pipeline_group_id: "{{tinsley_logstash_auth_accept_wbc_kafka_group_id}}", pipeline_client_id: "{{tinsley_logstash_auth_accept_wbc_kafka_client_id}}", kafka_topics: "{{tinsley_logstash_auth_accept_wbc_kafka_topics}}"}, {kafka_bootstrap_servers: "{{tinsley_logstash_kafka_bootstrap_servers}}", pipeline_group_id: "{{tinsley_logstash_auth_reject_wbc_kafka_group_id}}", pipeline_client_id: "{{tinsley_logstash_auth_reject_wbc_kafka_client_id}}", kafka_topics: "{{tinsley_logstash_auth_reject_wbc_kafka_topics}}"}]}
+
+            - { template_name: "auth_wbmc_kafka", final_name: "auth_wbmc_kafka_reigate", kafka_inputs: [{kafka_bootstrap_servers: "{{reigate_logstash_kafka_bootstrap_servers}}", pipeline_group_id: "{{reigate_logstash_auth_accept_wbmc_kafka_group_id}}", pipeline_client_id: "{{reigate_logstash_auth_accept_wbmc_kafka_client_id}}", kafka_topics: "{{reigate_logstash_auth_accept_wbmc_kafka_topics}}"}, {kafka_bootstrap_servers: "{{reigate_logstash_kafka_bootstrap_servers}}", pipeline_group_id: "{{reigate_logstash_auth_accept_wbmc_kafka_group_id}}", pipeline_client_id: "{{reigate_logstash_auth_reject_wbmc_kafka_client_id}}", kafka_topics: "{{reigate_logstash_auth_reject_wbmc_kafka_topics}}"}]}
+            - { template_name: "auth_wbmc_kafka", final_name: "auth_wbmc_kafka_tinsley", kafka_inputs: [{kafka_bootstrap_servers: "{{tinsley_logstash_kafka_bootstrap_servers}}", pipeline_group_id: "{{tinsley_logstash_auth_accept_wbmc_kafka_group_id}}", pipeline_client_id: "{{tinsley_logstash_auth_accept_wbmc_kafka_client_id}}", kafka_topics: "{{tinsley_logstash_auth_accept_wbmc_kafka_topics}}"}, {kafka_bootstrap_servers: "{{tinsley_logstash_kafka_bootstrap_servers}}", pipeline_group_id: "{{tinsley_logstash_auth_accept_wbmc_kafka_group_id}}", pipeline_client_id: "{{tinsley_logstash_auth_reject_wbmc_kafka_client_id}}", kafka_topics: "{{tinsley_logstash_auth_reject_wbmc_kafka_topics}}"}]}
+
+            - { template_name: "wbc_21c_rcd_connector_kafka_to_es", final_name: "wbc_21c_rcd_connector_kafka_to_es_reigate", kafka_inputs: [{kafka_bootstrap_servers: "{{reigate_logstash_kafka_bootstrap_servers}}", pipeline_group_id: "mygrp-wbc_21c_rcd_connector_monitoring_prod_app03032", pipeline_client_id: "wbc-21c-rcd-connector-monitoring-events-reigate-vvt", kafka_topics: ["wbc_21c_rcd_connector_P03032_reigate"]}]}
+            - { template_name: "wbc_21c_rcd_connector_kafka_to_es", final_name: "wbc_21c_rcd_connector_kafka_to_es_tinsley", kafka_inputs: [{kafka_bootstrap_servers: "{{tinsley_logstash_kafka_bootstrap_servers}}", pipeline_group_id: "mygrp-wbc_21c_rcd_connector_monitoring_prod_app03032", pipeline_client_id: "wbc-21c-rcd-connector-monitoring-events-tinsley-vvt", kafka_topics: ["wbc_21c_rcd_connector_P03032"]}]}
+
+
+    apm_server_nodes:
+      hosts:
+        10.54.22.97:
+          apm_http_enabled:       true
+          apm_server_ssl_enabled: false # Temporary until we upgrade IPSearch API & GUI to use SSL
+
+          apm_kibana_enabled: false # Elasticsearch has no connectivity to Kibana, so no point having it enabled
+          apm_kibana_host:    https://kibana.reigate.elk.radius.nat.bt.com:8080
+
+          apm_monitoring_enabled:      false
+          apm_monitoring_elastic_host: ["https://node1.reigate.elk.radius.nat.bt.com:61116"]
+          apm_output_elastic_host:     ["https://node2.reigate.elk.radius.nat.bt.com:61116","https://node5.reigate.elk.radius.nat.bt.com:61116"]
+        10.54.35.166:
+          apm_http_enabled:       true
+          apm_server_ssl_enabled: false # Temporary until we upgrade IPSearch API & GUI to use SSL
+
+          apm_kibana_enabled: true
+          apm_kibana_host:    https://kibana.reigate.elk.radius.nat.bt.com:8080
+
+          apm_monitoring_enabled:      false
+          apm_monitoring_elastic_host: ["https://node1.reigate.elk.radius.nat.bt.com:61116"]
+          apm_output_elastic_host:     ["https://node2.reigate.elk.radius.nat.bt.com:61116","https://node5.reigate.elk.radius.nat.bt.com:61116"]
+
+    filebeat_nodes:
+      hosts:
+        10.54.22.97:
+          filebeat_instance_name: blp03032010
+          filebeat_instance_tags: ["production-reigate-filebeat","blp03032010"]
+
+          filebeat_elastic_node_fqdn:          node1.reigate.elk.radius.nat.bt.com
+          filebeat_elastic_node_name:          reigate-elastic1
+          filebeat_output_elasticsearch_hosts: ["https://node1.reigate.elk.radius.nat.bt.com:61116", "https://node2.reigate.elk.radius.nat.bt.com:61116", "https://node5.reigate.elk.radius.nat.bt.com:61116"]
+          filebeat_kibana_host:                https://kibana.reigate.elk.radius.nat.bt.com:8080
+        10.54.22.230:
+          filebeat_instance_name: blp03032034
+          filebeat_instance_tags: ["production-reigate-filebeat","blp03032034"]
+
+          filebeat_elastic_node_fqdn:          node2.reigate.elk.radius.nat.bt.com
+          filebeat_elastic_node_name:          reigate-elastic2
+          filebeat_output_elasticsearch_hosts: ["https://node1.reigate.elk.radius.nat.bt.com:61116", "https://node2.reigate.elk.radius.nat.bt.com:61116", "https://node5.reigate.elk.radius.nat.bt.com:61116"]
+          filebeat_kibana_host:                https://kibana.reigate.elk.radius.nat.bt.com:8080
+        10.54.22.231:
+          filebeat_instance_name: blp03032035
+          filebeat_instance_tags: ["production-reigate-filebeat","blp03032035"]
+
+          filebeat_elastic_node_fqdn:          node3.reigate.elk.radius.nat.bt.com
+          filebeat_elastic_node_name:          reigate-elastic3
+          filebeat_output_elasticsearch_hosts: ["https://node1.reigate.elk.radius.nat.bt.com:61116", "https://node2.reigate.elk.radius.nat.bt.com:61116", "https://node5.reigate.elk.radius.nat.bt.com:61116"]
+          filebeat_kibana_host:                https://kibana.reigate.elk.radius.nat.bt.com:8080
+        10.54.22.232:
+          filebeat_instance_name: blp03032036
+          filebeat_instance_tags: ["production-reigate-filebeat","blp03032036"]
+
+          filebeat_elastic_node_fqdn:          node4.reigate.elk.radius.nat.bt.com
+          filebeat_elastic_node_name:          reigate-elastic4
+          filebeat_output_elasticsearch_hosts: ["https://node1.reigate.elk.radius.nat.bt.com:61116", "https://node2.reigate.elk.radius.nat.bt.com:61116", "https://node5.reigate.elk.radius.nat.bt.com:61116"]
+          filebeat_kibana_host:                https://kibana.reigate.elk.radius.nat.bt.com:8080
+        10.54.22.233:
+          filebeat_instance_name: blp03032037
+          filebeat_instance_tags: ["production-reigate-filebeat","blp03032037"]
+
+          filebeat_elastic_node_fqdn:          node5.reigate.elk.radius.nat.bt.com
+          filebeat_elastic_node_name:          reigate-elastic5
+          filebeat_output_elasticsearch_hosts: ["https://node1.reigate.elk.radius.nat.bt.com:61116", "https://node2.reigate.elk.radius.nat.bt.com:61116", "https://node5.reigate.elk.radius.nat.bt.com:61116"]
+          filebeat_kibana_host:                https://kibana.reigate.elk.radius.nat.bt.com:8080
+        10.54.22.234:
+          filebeat_instance_name: blp03032038
+          filebeat_instance_tags: ["production-reigate-filebeat","blp03032038"]
+
+          filebeat_elastic_node_fqdn:          node6.reigate.elk.radius.nat.bt.com
+          filebeat_elastic_node_name:          reigate-elastic6
+          filebeat_output_elasticsearch_hosts: ["https://node1.reigate.elk.radius.nat.bt.com:61116", "https://node2.reigate.elk.radius.nat.bt.com:61116", "https://node5.reigate.elk.radius.nat.bt.com:61116"]
+          filebeat_kibana_host:                https://kibana.reigate.elk.radius.nat.bt.com:8080
+
+    metricbeat_nodes:
+      hosts:
+        10.54.22.97:
+          metricbeat_name:                               blp03032010-prod-re
+          metricbeat_kibana_host:                        "https://kibana.reigate.elk.radius.nat.bt.com:8080"
+          metricbeat_output_elasticsearch_hosts:         "https://node5.reigate.elk.radius.nat.bt.com:61116"
+
+          metricbeat_elastic_module_enabled:             true
+          metricbeat_elasticsearch_module_xpack_enabled: true
+          metricbeat_elastic_module_hosts:               "https://node1.reigate.elk.radius.nat.bt.com:61116"
+
+          metricbeat_logstash_module_enabled:            true
+          metricbeat_logstash_module_xpack_enabled:      true
+
+          metricbeat_beat_module_hosts: ["http://localhost:5066", "http://localhost:5067"]
+          metricbeat_tags:              ["production", "reigate"]
+        10.54.22.230:
+          metricbeat_name:                               blp03032034-prod-re
+          metricbeat_kibana_host:                        "https://kibana.reigate.elk.radius.nat.bt.com:8080"
+          metricbeat_output_elasticsearch_hosts:         "https://node5.reigate.elk.radius.nat.bt.com:61116"
+
+          metricbeat_elastic_module_enabled:             true
+          metricbeat_elasticsearch_module_xpack_enabled: true
+          metricbeat_elastic_module_hosts:               "https://node2.reigate.elk.radius.nat.bt.com:61116"
+
+          metricbeat_beat_module_hosts: ["http://localhost:5067"]
+          metricbeat_tags:              ["production", "reigate"]
+        10.54.22.231:
+          metricbeat_name:                               blp03032035-prod-re
+          metricbeat_kibana_host:                        "https://kibana.reigate.elk.radius.nat.bt.com:8080"
+          metricbeat_output_elasticsearch_hosts:         "https://node5.reigate.elk.radius.nat.bt.com:61116"
+
+          metricbeat_elastic_module_enabled:             true
+          metricbeat_elasticsearch_module_xpack_enabled: true
+          metricbeat_elastic_module_hosts:               "https://node3.reigate.elk.radius.nat.bt.com:61116"
+
+          metricbeat_beat_module_hosts: ["http://localhost:5067"]
+          metricbeat_tags:              ["production", "reigate"]
+        10.54.22.232:
+          metricbeat_name:                               blp03032036-prod-re
+          metricbeat_kibana_host:                        "https://kibana.reigate.elk.radius.nat.bt.com:8080"
+          metricbeat_output_elasticsearch_hosts:         "https://node5.reigate.elk.radius.nat.bt.com:61116"
+
+          metricbeat_elastic_module_enabled:             true
+          metricbeat_elasticsearch_module_xpack_enabled: true
+          metricbeat_elastic_module_hosts:               "https://node4.reigate.elk.radius.nat.bt.com:61116"
+
+          metricbeat_beat_module_hosts: ["http://localhost:5067"]
+          metricbeat_tags:              ["production", "reigate"]
+        10.54.22.233:
+          metricbeat_name:                               blp03032037-prod-re
+          metricbeat_kibana_host:                        "https://kibana.reigate.elk.radius.nat.bt.com:8080"
+          metricbeat_output_elasticsearch_hosts:         "https://node5.reigate.elk.radius.nat.bt.com:61116"
+
+          metricbeat_elastic_module_enabled:             true
+          metricbeat_elasticsearch_module_xpack_enabled: true
+          metricbeat_elastic_module_hosts:               "https://node5.reigate.elk.radius.nat.bt.com:61116"
+
+          metricbeat_beat_module_hosts: ["http://localhost:5067"]
+          metricbeat_tags:              ["production", "reigate"]
+        10.54.22.234:
+          metricbeat_name:                               blp03032038-prod-re
+          metricbeat_kibana_host:                        "https://kibana.reigate.elk.radius.nat.bt.com:8080"
+          metricbeat_output_elasticsearch_hosts:         "https://node5.reigate.elk.radius.nat.bt.com:61116"
+
+          metricbeat_elastic_module_enabled:             true
+          metricbeat_elasticsearch_module_xpack_enabled: true
+          metricbeat_elastic_module_hosts:               "https://node6.reigate.elk.radius.nat.bt.com:61116"
+
+          metricbeat_beat_module_hosts: ["http://localhost:5067"]
+          metricbeat_tags:              ["production", "reigate"]
+        10.54.35.166:
+          metricbeat_name:                               blp03032043-prod-re
+          metricbeat_kibana_host:                 "https://kibana.reigate.elk.radius.nat.bt.com:8080"
+          metricbeat_output_elasticsearch_hosts:  "https://node5.reigate.elk.radius.nat.bt.com:61116"
+
+          metricbeat_kibana_module_enabled:       true
+          metricbeat_kibana_module_xpack_enabled: true
+          metricbeat_kibana_module_hosts:         "https://kibana.reigate.elk.radius.nat.bt.com:8080"
+
+          metricbeat_beat_module_hosts: ["http://localhost:5066", "http://localhost:5067"]
+          metricbeat_tags:              ["production", "reigate"]
+
+    elasticsearch_rolling_upgrade:
+      hosts:
+        10.54.22.231:
+          elastic_rolling_upgrade: true
+          data_node_upgrade:       true
+          elastic_host:            https://node3.reigate.elk.radius.nat.bt.com:61116
+        10.54.22.232:
+          elastic_rolling_upgrade: true
+          data_node_upgrade:       true
+          elastic_host:            https://node4.reigate.elk.radius.nat.bt.com:61116
+        10.54.22.234:
+          elastic_rolling_upgrade: true
+          data_node_upgrade:       true
+          elastic_host:            https://node6.reigate.elk.radius.nat.bt.com:61116
+        10.54.22.97:
+          elastic_rolling_upgrade: true
+          elastic_host:            https://node1.reigate.elk.radius.nat.bt.com:61116
+        10.54.22.230:
+          elastic_rolling_upgrade: true
+          elastic_host:            https://node2.reigate.elk.radius.nat.bt.com:61116
+        10.54.22.233:
+          elastic_rolling_upgrade: true
+          elastic_host:            https://node5.reigate.elk.radius.nat.bt.com:61116
+
+    elk_rolling_upgrade:
+      hosts:
+        10.54.22.97:
+          apm_server_rolling_upgrade: true
+          filebeat_rolling_upgrade:   true
+          logstash_rolling_upgrade:   true
+          metricbeat_rolling_upgrade: true
+        10.54.22.230:
+          filebeat_rolling_upgrade:   true
+          metricbeat_rolling_upgrade: true
+        10.54.22.231:
+          filebeat_rolling_upgrade:   true
+          metricbeat_rolling_upgrade: true
+        10.54.22.232:
+          filebeat_rolling_upgrade:   true
+          metricbeat_rolling_upgrade: true
+        10.54.22.233:
+          filebeat_rolling_upgrade:   true
+          metricbeat_rolling_upgrade: true
+        10.54.22.234:
+          filebeat_rolling_upgrade:   true
+          metricbeat_rolling_upgrade: true
+        10.54.35.166:
+          apm_server_rolling_upgrade: true
+          kibana_rolling_upgrade:     true
+          metricbeat_rolling_upgrade: true
+
+    # Not to be used too often, only when the whole cluster needs to be restarted
+    elasticsearch_full_upgrade:
+      hosts:
+        10.54.22.231:
+        10.54.22.232:
+        10.54.22.234:
+        10.54.22.97:
+        10.54.22.230:
+        10.54.22.233:
+
+    elastic_templates:
+      hosts:
+        10.54.22.97:
+          import_ilm_policies:           false
+          import_index_templates:        false
+          import_security_role_mappings: false
+          import_security_roles:         false
+          import_watchers:               false
+
+          elasticsearch_security_roles_list:
+            - { role_name: "api_access_role"          }
+            - { role_name: "apm_server_setup_role"    }
+            - { role_name: "apm_server_writer_role"   }
+            - { role_name: "bb_tv_team_role"          }
+            - { role_name: "ee_team_prod_role"        }
+            - { role_name: "filebeat_setup_role"      }
+            - { role_name: "filebeat_writer_role"     }
+            - { role_name: "grafana_role"             }
+            - { role_name: "logstash_writer_role"     }
+            - { role_name: "marvel_team_prod_role"    }
+            - { role_name: "metricbeat_setup_role"    }
+            - { role_name: "metricbeat_writer_role"   }
+            - { role_name: "noc_tools_role"           }
+            - { role_name: "non_ops_radius_user_role" }
+            - { role_name: "ops_user_role"            }
+            - { role_name: "rrc_team_role"            }
+            - { role_name: "woosh_prod_role"          }
+          elasticsearch_security_role_mappings_list:
+            - { mapping_name: "bb_tv_team_mapping"          }
+            - { mapping_name: "ee_prod_mapping"             }
+            - { mapping_name: "marvel_prod_mapping"         }
+            - { mapping_name: "non_ops_radius_user_mapping" }
+            - { mapping_name: "ops_user_mapping"            }
+            - { mapping_name: "rrc_team_mapping"            }
+          elasticsearch_index_template_list:
+            - { index_template_name: "aaa_metrics_template"         }
+            - { index_template_name: "aaa_policy_template"          }
+            - { index_template_name: "acct_template"                }
+            - { index_template_name: "auth_mna_template"            }
+            - { index_template_name: "auth_wbc_template"            }
+            - { index_template_name: "auth_wbmc_template"           }
+            - { index_template_name: "ip_addr_location_template"    }
+            - { index_template_name: "session_data_template"        }
+            - { index_template_name: "wbc_rcd_connector_monitoring" }
+
+          watcher_webhook_path:        "webhookb2/35551bf3-1cb5-4f77-b3d0-16839f39952c@a7f35688-9c00-4d5e-ba41-29f146377ab0/IncomingWebhook/d44ea9b46ce747f488e745cc93b07be2/be9364fb-9901-4467-ad0b-7bf879f17d95"
+          elasticsearch_watchers_list:
+            - { name: "reigate_metricbeat-logstash-acct-output",                        logstash_host_name: "blp03032010", logstash_pipeline_id: "acct_prod_data",                          logstash_pipeline_inout: "out", logstash_pipeline_threshold: 2500, over_threshold: false }
+            - { name: "reigate_metricbeat-logstash-auth_mnar-output",                   logstash_host_name: "blp03032010", logstash_pipeline_id: "auth_mna_prod_data",                      logstash_pipeline_inout: "out", logstash_pipeline_threshold: 100, over_threshold: false }
+            - { name: "reigate_metricbeat-logstash-auth_wbc-output",                    logstash_host_name: "blp03032010", logstash_pipeline_id: "auth_wbc_prod_data",                      logstash_pipeline_inout: "out", logstash_pipeline_threshold: 300, over_threshold: false }
+            - { name: "reigate_metricbeat-logstash-overall-output",                     logstash_host_name: "blp03032010", logstash_pipeline_id: "",                                        logstash_pipeline_inout: "out", logstash_pipeline_threshold: 3750, over_threshold: false }
+            - { name: "reigate_metricbeat-logstash-overall-input",                      logstash_host_name: "blp03032010", logstash_pipeline_id: "",                                        logstash_pipeline_inout: "in",  logstash_pipeline_threshold: 3750, over_threshold: false }
+
+            - { name: "crbbrad1-logstash-acct_wbc_tinsley_collector-output",              logstash_host_name: "crbbrad1",             logstash_pipeline_id: "acct-wbc-tinsley-collector",              logstash_pipeline_inout: "out", logstash_pipeline_threshold: 150, over_threshold: false }
+            - { name: "crbbrad1-logstash-acct_wbc_reigate_collector-output",              logstash_host_name: "crbbrad1",             logstash_pipeline_id: "acct-wbc-reigate-collector",              logstash_pipeline_inout: "out", logstash_pipeline_threshold: 150, over_threshold: false }
+            - { name: "crbbrad1-logstash-auth_reject_wbc_tinsley_collector-output",       logstash_host_name: "crbbrad1",             logstash_pipeline_id: "auth_reject-wbc-tinsley-collector",       logstash_pipeline_inout: "out", logstash_pipeline_threshold: 20, over_threshold: false }
+            - { name: "crbbrad1-logstash-auth_reject_wbc_reigate_collector-output",       logstash_host_name: "crbbrad1",             logstash_pipeline_id: "auth_reject-wbc-reigate-collector",       logstash_pipeline_inout: "out", logstash_pipeline_threshold: 20, over_threshold: false }
+            - { name: "crbbrad1-logstash-auth_accept_wbc_tinsley_collector-output",       logstash_host_name: "crbbrad1",             logstash_pipeline_id: "auth_accept-wbc-tinsley-collector",       logstash_pipeline_inout: "out", logstash_pipeline_threshold: 15, over_threshold: false }
+            - { name: "crbbrad1-logstash-auth_accept_wbc_reigate_collector-output",       logstash_host_name: "crbbrad1",             logstash_pipeline_id: "auth_accept-wbc-reigate-collector",       logstash_pipeline_inout: "out", logstash_pipeline_threshold: 15, over_threshold: false }
+            - { name: "crbbrad1-logstash-system_metrics_metricbeat_all_collector-output", logstash_host_name: "crbbrad1",             logstash_pipeline_id: "system_metrics-metricbeat-all-collector", logstash_pipeline_inout: "out", logstash_pipeline_threshold: 5, over_threshold: false }
+            - { name: "crbbrad1-logstash-aaa_snmp_wbc_all_collector-output",              logstash_host_name: "crbbrad1",             logstash_pipeline_id: "aaa_snmp-wbc-all-collector",              logstash_pipeline_inout: "out", logstash_pipeline_threshold: 0, over_threshold: false }
+            - { name: "crbbrad1-logstash-acct_ips_wbc_reigate_collector-output",          logstash_host_name: "crbbrad1",             logstash_pipeline_id: "acct_ips-wbc-reigate-collector",          logstash_pipeline_inout: "out", logstash_pipeline_threshold: 0, over_threshold: false }
+            - { name: "crbbrad1-logstash-acct_ips_wbc_tinsley_collector-output",          logstash_host_name: "crbbrad1",             logstash_pipeline_id: "acct_ips-wbc-reigate-collector",          logstash_pipeline_inout: "out", logstash_pipeline_threshold: 0, over_threshold: false }
+            - { name: "crbbrad2-logstash-acct_wbc_tinsley_collector-output",              logstash_host_name: "crbbrad2",             logstash_pipeline_id: "acct-wbc-tinsley-collector",              logstash_pipeline_inout: "out", logstash_pipeline_threshold: 150, over_threshold: false }
+            - { name: "crbbrad2-logstash-acct_wbc_reigate_collector-output",              logstash_host_name: "crbbrad2",             logstash_pipeline_id: "acct-wbc-reigate-collector",              logstash_pipeline_inout: "out", logstash_pipeline_threshold: 150, over_threshold: false }
+            - { name: "crbbrad2-logstash-auth_reject_wbc_tinsley_collector-output",       logstash_host_name: "crbbrad2",             logstash_pipeline_id: "auth_reject-wbc-tinsley-collector",       logstash_pipeline_inout: "out", logstash_pipeline_threshold: 20, over_threshold: false }
+            - { name: "crbbrad2-logstash-auth_reject_wbc_reigate_collector-output",       logstash_host_name: "crbbrad2",             logstash_pipeline_id: "auth_reject-wbc-reigate-collector",       logstash_pipeline_inout: "out", logstash_pipeline_threshold: 20, over_threshold: false }
+            - { name: "crbbrad2-logstash-auth_accept_wbc_tinsley_collector-output",       logstash_host_name: "crbbrad2",             logstash_pipeline_id: "auth_accept-wbc-tinsley-collector",       logstash_pipeline_inout: "out", logstash_pipeline_threshold: 15, over_threshold: false }
+            - { name: "crbbrad2-logstash-auth_accept_wbc_reigate_collector-output",       logstash_host_name: "crbbrad2",             logstash_pipeline_id: "auth_accept-wbc-reigate-collector",       logstash_pipeline_inout: "out", logstash_pipeline_threshold: 15, over_threshold: false }
+            - { name: "crbbrad2-logstash-system_metrics_metricbeat_all_collector-output", logstash_host_name: "crbbrad2",             logstash_pipeline_id: "system_metrics-metricbeat-all-collector", logstash_pipeline_inout: "out", logstash_pipeline_threshold: 5, over_threshold: false }
+            - { name: "crbbrad2-logstash-aaa_snmp_wbc_all_collector-output",              logstash_host_name: "crbbrad2",             logstash_pipeline_id: "aaa_snmp-wbc-all-collector",              logstash_pipeline_inout: "out", logstash_pipeline_threshold: 0, over_threshold: false }
+            - { name: "crbbrad2-logstash-acct_ips_wbc_reigate_collector-output",          logstash_host_name: "crbbrad2",             logstash_pipeline_id: "acct_ips-wbc-reigate-collector",          logstash_pipeline_inout: "out", logstash_pipeline_threshold: 0, over_threshold: false }
+            - { name: "crbbrad2-logstash-acct_ips_wbc_tinsley_collector-output",          logstash_host_name: "crbbrad2",             logstash_pipeline_id: "acct_ips-wbc-reigate-collector",          logstash_pipeline_inout: "out", logstash_pipeline_threshold: 0, over_threshold: false }
+
+            - { name: "fabbrad1-logstash-acct_wbc_tinsley_collector-output",              logstash_host_name: "fabbrad1",             logstash_pipeline_id: "acct-wbc-tinsley-collector",              logstash_pipeline_inout: "out", logstash_pipeline_threshold: 150, over_threshold: false }
+            - { name: "fabbrad1-logstash-acct_wbc_reigate_collector-output",              logstash_host_name: "fabbrad1",             logstash_pipeline_id: "acct-wbc-reigate-collector",              logstash_pipeline_inout: "out", logstash_pipeline_threshold: 150, over_threshold: false }
+            - { name: "fabbrad1-logstash-auth_reject_wbc_tinsley_collector-output",       logstash_host_name: "fabbrad1",             logstash_pipeline_id: "auth_reject-wbc-tinsley-collector",       logstash_pipeline_inout: "out", logstash_pipeline_threshold: 20, over_threshold: false }
+            - { name: "fabbrad1-logstash-auth_reject_wbc_reigate_collector-output",       logstash_host_name: "fabbrad1",             logstash_pipeline_id: "auth_reject-wbc-reigate-collector",       logstash_pipeline_inout: "out", logstash_pipeline_threshold: 20, over_threshold: false }
+            - { name: "fabbrad1-logstash-auth_accept_wbc_tinsley_collector-output",       logstash_host_name: "fabbrad1",             logstash_pipeline_id: "auth_accept-wbc-tinsley-collector",       logstash_pipeline_inout: "out", logstash_pipeline_threshold: 15, over_threshold: false }
+            - { name: "fabbrad1-logstash-auth_accept_wbc_reigate_collector-output",       logstash_host_name: "fabbrad1",             logstash_pipeline_id: "auth_accept-wbc-reigate-collector",       logstash_pipeline_inout: "out", logstash_pipeline_threshold: 15, over_threshold: false }
+            - { name: "fabbrad1-logstash-system_metrics_metricbeat_all_collector-output", logstash_host_name: "fabbrad1",             logstash_pipeline_id: "system_metrics-metricbeat-all-collector", logstash_pipeline_inout: "out", logstash_pipeline_threshold: 5, over_threshold: false }
+            - { name: "fabbrad1-logstash-aaa_snmp_wbc_all_collector-output",              logstash_host_name: "fabbrad1",             logstash_pipeline_id: "aaa_snmp-wbc-all-collector",              logstash_pipeline_inout: "out", logstash_pipeline_threshold: 0, over_threshold: false }
+            - { name: "fabbrad1-logstash-acct_ips_wbc_reigate_collector-output",          logstash_host_name: "fabbrad1",             logstash_pipeline_id: "acct_ips-wbc-reigate-collector",          logstash_pipeline_inout: "out", logstash_pipeline_threshold: 0, over_threshold: false }
+            - { name: "fabbrad1-logstash-acct_ips_wbc_tinsley_collector-output",          logstash_host_name: "fabbrad1",             logstash_pipeline_id: "acct_ips-wbc-reigate-collector",          logstash_pipeline_inout: "out", logstash_pipeline_threshold: 0, over_threshold: false }
+            - { name: "fabbrad2-logstash-acct_wbc_tinsley_collector-output",              logstash_host_name: "fabbrad2",             logstash_pipeline_id: "acct-wbc-tinsley-collector",              logstash_pipeline_inout: "out", logstash_pipeline_threshold: 150, over_threshold: false }
+            - { name: "fabbrad2-logstash-acct_wbc_reigate_collector-output",              logstash_host_name: "fabbrad2",             logstash_pipeline_id: "acct-wbc-reigate-collector",              logstash_pipeline_inout: "out", logstash_pipeline_threshold: 150, over_threshold: false }
+            - { name: "fabbrad2-logstash-auth_reject_wbc_tinsley_collector-output",       logstash_host_name: "fabbrad2",             logstash_pipeline_id: "auth_reject-wbc-tinsley-collector",       logstash_pipeline_inout: "out", logstash_pipeline_threshold: 20, over_threshold: false }
+            - { name: "fabbrad2-logstash-auth_reject_wbc_reigate_collector-output",       logstash_host_name: "fabbrad2",             logstash_pipeline_id: "auth_reject-wbc-reigate-collector",       logstash_pipeline_inout: "out", logstash_pipeline_threshold: 20, over_threshold: false }
+            - { name: "fabbrad2-logstash-auth_accept_wbc_tinsley_collector-output",       logstash_host_name: "fabbrad2",             logstash_pipeline_id: "auth_accept-wbc-tinsley-collector",       logstash_pipeline_inout: "out", logstash_pipeline_threshold: 15, over_threshold: false }
+            - { name: "fabbrad2-logstash-auth_accept_wbc_reigate_collector-output",       logstash_host_name: "fabbrad2",             logstash_pipeline_id: "auth_accept-wbc-reigate-collector",       logstash_pipeline_inout: "out", logstash_pipeline_threshold: 15, over_threshold: false }
+            - { name: "fabbrad2-logstash-system_metrics_metricbeat_all_collector-output", logstash_host_name: "fabbrad2",             logstash_pipeline_id: "system_metrics-metricbeat-all-collector", logstash_pipeline_inout: "out", logstash_pipeline_threshold: 5, over_threshold: false }
+            - { name: "fabbrad2-logstash-aaa_snmp_wbc_all_collector-output",              logstash_host_name: "fabbrad2",             logstash_pipeline_id: "aaa_snmp-wbc-all-collector",              logstash_pipeline_inout: "out", logstash_pipeline_threshold: 0, over_threshold: false }
+            - { name: "fabbrad2-logstash-acct_ips_wbc_reigate_collector-output",          logstash_host_name: "fabbrad2",             logstash_pipeline_id: "acct_ips-wbc-reigate-collector",          logstash_pipeline_inout: "out", logstash_pipeline_threshold: 0, over_threshold: false }
+            - { name: "fabbrad2-logstash-acct_ips_wbc_tinsley_collector-output",          logstash_host_name: "fabbrad2",             logstash_pipeline_id: "acct_ips-wbc-reigate-collector",          logstash_pipeline_inout: "out", logstash_pipeline_threshold: 0, over_threshold: false }
+
+            - { name: "lsbbrad1-logstash-acct_wbc_tinsley_collector-output",              logstash_host_name: "lsbbrad1",             logstash_pipeline_id: "acct-wbc-tinsley-collector",              logstash_pipeline_inout: "out", logstash_pipeline_threshold: 150, over_threshold: false }
+            - { name: "lsbbrad1-logstash-acct_wbc_reigate_collector-output",              logstash_host_name: "lsbbrad1",             logstash_pipeline_id: "acct-wbc-reigate-collector",              logstash_pipeline_inout: "out", logstash_pipeline_threshold: 150, over_threshold: false }
+            - { name: "lsbbrad1-logstash-auth_reject_wbc_tinsley_collector-output",       logstash_host_name: "lsbbrad1",             logstash_pipeline_id: "auth_reject-wbc-tinsley-collector",       logstash_pipeline_inout: "out", logstash_pipeline_threshold: 20, over_threshold: false }
+            - { name: "lsbbrad1-logstash-auth_reject_wbc_reigate_collector-output",       logstash_host_name: "lsbbrad1",             logstash_pipeline_id: "auth_reject-wbc-reigate-collector",       logstash_pipeline_inout: "out", logstash_pipeline_threshold: 20, over_threshold: false }
+            - { name: "lsbbrad1-logstash-auth_accept_wbc_tinsley_collector-output",       logstash_host_name: "lsbbrad1",             logstash_pipeline_id: "auth_accept-wbc-tinsley-collector",       logstash_pipeline_inout: "out", logstash_pipeline_threshold: 15, over_threshold: false }
+            - { name: "lsbbrad1-logstash-auth_accept_wbc_reigate_collector-output",       logstash_host_name: "lsbbrad1",             logstash_pipeline_id: "auth_accept-wbc-reigate-collector",       logstash_pipeline_inout: "out", logstash_pipeline_threshold: 15, over_threshold: false }
+            - { name: "lsbbrad1-logstash-system_metrics_metricbeat_all_collector-output", logstash_host_name: "lsbbrad1",             logstash_pipeline_id: "system_metrics-metricbeat-all-collector", logstash_pipeline_inout: "out", logstash_pipeline_threshold: 5, over_threshold: false }
+            - { name: "lsbbrad1-logstash-aaa_snmp_wbc_all_collector-output",              logstash_host_name: "lsbbrad1",             logstash_pipeline_id: "aaa_snmp-wbc-all-collector",              logstash_pipeline_inout: "out", logstash_pipeline_threshold: 0, over_threshold: false }
+            - { name: "lsbbrad1-logstash-acct_ips_wbc_reigate_collector-output",          logstash_host_name: "lsbbrad1",             logstash_pipeline_id: "acct_ips-wbc-reigate-collector",          logstash_pipeline_inout: "out", logstash_pipeline_threshold: 0, over_threshold: false }
+            - { name: "lsbbrad1-logstash-acct_ips_wbc_tinsley_collector-output",          logstash_host_name: "lsbbrad1",             logstash_pipeline_id: "acct_ips-wbc-reigate-collector",          logstash_pipeline_inout: "out", logstash_pipeline_threshold: 0, over_threshold: false }
+            - { name: "lsbbrad2-logstash-acct_wbc_tinsley_collector-output",              logstash_host_name: "lsbbrad2",             logstash_pipeline_id: "acct-wbc-tinsley-collector",              logstash_pipeline_inout: "out", logstash_pipeline_threshold: 150, over_threshold: false }
+            - { name: "lsbbrad2-logstash-acct_wbc_reigate_collector-output",              logstash_host_name: "lsbbrad2",             logstash_pipeline_id: "acct-wbc-reigate-collector",              logstash_pipeline_inout: "out", logstash_pipeline_threshold: 150, over_threshold: false }
+            - { name: "lsbbrad2-logstash-auth_reject_wbc_tinsley_collector-output",       logstash_host_name: "lsbbrad2",             logstash_pipeline_id: "auth_reject-wbc-tinsley-collector",       logstash_pipeline_inout: "out", logstash_pipeline_threshold: 20, over_threshold: false }
+            - { name: "lsbbrad2-logstash-auth_reject_wbc_reigate_collector-output",       logstash_host_name: "lsbbrad2",             logstash_pipeline_id: "auth_reject-wbc-reigate-collector",       logstash_pipeline_inout: "out", logstash_pipeline_threshold: 20, over_threshold: false }
+            - { name: "lsbbrad2-logstash-auth_accept_wbc_tinsley_collector-output",       logstash_host_name: "lsbbrad2",             logstash_pipeline_id: "auth_accept-wbc-tinsley-collector",       logstash_pipeline_inout: "out", logstash_pipeline_threshold: 15, over_threshold: false }
+            - { name: "lsbbrad2-logstash-auth_accept_wbc_reigate_collector-output",       logstash_host_name: "lsbbrad2",             logstash_pipeline_id: "auth_accept-wbc-reigate-collector",       logstash_pipeline_inout: "out", logstash_pipeline_threshold: 15, over_threshold: false }
+            - { name: "lsbbrad2-logstash-system_metrics_metricbeat_all_collector-output", logstash_host_name: "lsbbrad2",             logstash_pipeline_id: "system_metrics-metricbeat-all-collector", logstash_pipeline_inout: "out", logstash_pipeline_threshold: 5, over_threshold: false }
+            - { name: "lsbbrad2-logstash-aaa_snmp_wbc_all_collector-output",              logstash_host_name: "lsbbrad2",             logstash_pipeline_id: "aaa_snmp-wbc-all-collector",              logstash_pipeline_inout: "out", logstash_pipeline_threshold: 0, over_threshold: false }
+            - { name: "lsbbrad2-logstash-acct_ips_wbc_reigate_collector-output",          logstash_host_name: "lsbbrad2",             logstash_pipeline_id: "acct_ips-wbc-reigate-collector",          logstash_pipeline_inout: "out", logstash_pipeline_threshold: 0, over_threshold: false }
+            - { name: "lsbbrad2-logstash-acct_ips_wbc_tinsley_collector-output",          logstash_host_name: "lsbbrad2",             logstash_pipeline_id: "acct_ips-wbc-reigate-collector",          logstash_pipeline_inout: "out", logstash_pipeline_threshold: 0, over_threshold: false }
+
+            - { name: "msbbrad1-logstash-acct_wbc_tinsley_collector-output",              logstash_host_name: "msbbrad1",             logstash_pipeline_id: "acct-wbc-tinsley-collector",              logstash_pipeline_inout: "out", logstash_pipeline_threshold: 150, over_threshold: false }
+            - { name: "msbbrad1-logstash-acct_wbc_reigate_collector-output",              logstash_host_name: "msbbrad1",             logstash_pipeline_id: "acct-wbc-reigate-collector",              logstash_pipeline_inout: "out", logstash_pipeline_threshold: 150, over_threshold: false }
+            - { name: "msbbrad1-logstash-auth_reject_wbc_tinsley_collector-output",       logstash_host_name: "msbbrad1",             logstash_pipeline_id: "auth_reject-wbc-tinsley-collector",       logstash_pipeline_inout: "out", logstash_pipeline_threshold: 20, over_threshold: false }
+            - { name: "msbbrad1-logstash-auth_reject_wbc_reigate_collector-output",       logstash_host_name: "msbbrad1",             logstash_pipeline_id: "auth_reject-wbc-reigate-collector",       logstash_pipeline_inout: "out", logstash_pipeline_threshold: 20, over_threshold: false }
+            - { name: "msbbrad1-logstash-auth_accept_wbc_tinsley_collector-output",       logstash_host_name: "msbbrad1",             logstash_pipeline_id: "auth_accept-wbc-tinsley-collector",       logstash_pipeline_inout: "out", logstash_pipeline_threshold: 15, over_threshold: false }
+            - { name: "msbbrad1-logstash-auth_accept_wbc_reigate_collector-output",       logstash_host_name: "msbbrad1",             logstash_pipeline_id: "auth_accept-wbc-reigate-collector",       logstash_pipeline_inout: "out", logstash_pipeline_threshold: 15, over_threshold: false }
+            - { name: "msbbrad1-logstash-system_metrics_metricbeat_all_collector-output", logstash_host_name: "msbbrad1",             logstash_pipeline_id: "system_metrics-metricbeat-all-collector", logstash_pipeline_inout: "out", logstash_pipeline_threshold: 5, over_threshold: false }
+            - { name: "msbbrad1-logstash-aaa_snmp_wbc_all_collector-output",              logstash_host_name: "msbbrad1",             logstash_pipeline_id: "aaa_snmp-wbc-all-collector",              logstash_pipeline_inout: "out", logstash_pipeline_threshold: 0, over_threshold: false }
+            - { name: "msbbrad1-logstash-acct_ips_wbc_reigate_collector-output",          logstash_host_name: "msbbrad1",             logstash_pipeline_id: "acct_ips-wbc-reigate-collector",          logstash_pipeline_inout: "out", logstash_pipeline_threshold: 0, over_threshold: false }
+            - { name: "msbbrad1-logstash-acct_ips_wbc_tinsley_collector-output",          logstash_host_name: "msbbrad1",             logstash_pipeline_id: "acct_ips-wbc-reigate-collector",          logstash_pipeline_inout: "out", logstash_pipeline_threshold: 0, over_threshold: false }
+            - { name: "msbbrad2-logstash-acct_wbc_tinsley_collector-output",              logstash_host_name: "msbbrad2",             logstash_pipeline_id: "acct-wbc-tinsley-collector",              logstash_pipeline_inout: "out", logstash_pipeline_threshold: 150, over_threshold: false }
+            - { name: "msbbrad2-logstash-acct_wbc_reigate_collector-output",              logstash_host_name: "msbbrad2",             logstash_pipeline_id: "acct-wbc-reigate-collector",              logstash_pipeline_inout: "out", logstash_pipeline_threshold: 150, over_threshold: false }
+            - { name: "msbbrad2-logstash-auth_reject_wbc_tinsley_collector-output",       logstash_host_name: "msbbrad2",             logstash_pipeline_id: "auth_reject-wbc-tinsley-collector",       logstash_pipeline_inout: "out", logstash_pipeline_threshold: 20, over_threshold: false }
+            - { name: "msbbrad2-logstash-auth_reject_wbc_reigate_collector-output",       logstash_host_name: "msbbrad2",             logstash_pipeline_id: "auth_reject-wbc-reigate-collector",       logstash_pipeline_inout: "out", logstash_pipeline_threshold: 20, over_threshold: false }
+            - { name: "msbbrad2-logstash-auth_accept_wbc_tinsley_collector-output",       logstash_host_name: "msbbrad2",             logstash_pipeline_id: "auth_accept-wbc-tinsley-collector",       logstash_pipeline_inout: "out", logstash_pipeline_threshold: 15, over_threshold: false }
+            - { name: "msbbrad2-logstash-auth_accept_wbc_reigate_collector-output",       logstash_host_name: "msbbrad2",             logstash_pipeline_id: "auth_accept-wbc-reigate-collector",       logstash_pipeline_inout: "out", logstash_pipeline_threshold: 15, over_threshold: false }
+            - { name: "msbbrad2-logstash-system_metrics_metricbeat_all_collector-output", logstash_host_name: "msbbrad2",             logstash_pipeline_id: "system_metrics-metricbeat-all-collector", logstash_pipeline_inout: "out", logstash_pipeline_threshold: 5, over_threshold: false }
+            - { name: "msbbrad2-logstash-aaa_snmp_wbc_all_collector-output",              logstash_host_name: "msbbrad2",             logstash_pipeline_id: "aaa_snmp-wbc-all-collector",              logstash_pipeline_inout: "out", logstash_pipeline_threshold: 0, over_threshold: false }
+            - { name: "msbbrad2-logstash-acct_ips_wbc_reigate_collector-output",          logstash_host_name: "msbbrad2",             logstash_pipeline_id: "acct_ips-wbc-reigate-collector",          logstash_pipeline_inout: "out", logstash_pipeline_threshold: 0, over_threshold: false }
+            - { name: "msbbrad2-logstash-acct_ips_wbc_tinsley_collector-output",          logstash_host_name: "msbbrad2",             logstash_pipeline_id: "acct_ips-wbc-reigate-collector",          logstash_pipeline_inout: "out", logstash_pipeline_threshold: 0, over_threshold: false }

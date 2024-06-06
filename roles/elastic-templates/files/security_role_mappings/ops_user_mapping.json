@@ -1,0 +1,17 @@
+{
+  "enabled" : true,
+  "roles" : [
+    "ops_user_role",
+    "monitoring_user"
+  ],
+  "rules" : {
+    "any" : [
+      {
+        "field" : {
+          "groups" : "CN=mygrp-kibana-ops-access,OU=group,OU=mygrp,OU=application,OU=btplc,DC=iuser,DC=iroot,DC=adidom,DC=com"
+        }
+      }
+    ]
+  },
+  "metadata" : { }
+}

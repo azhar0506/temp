@@ -1,0 +1,341 @@
+{
+    "version": 4,
+    "order": 0,
+    "index_patterns": [
+        "acct*"
+    ],
+    "settings": {
+        "index": {
+            "lifecycle": {
+                "name": "AcctPolicy"
+            },
+            "refresh_interval": "3s",
+            "search": {
+                "slowlog": {
+                    "threshold": {
+                        "query": {
+                            "debug": "500ms"
+                        }
+                    }
+                }
+            },
+            "sort": {
+                "field": "accounting_event_time",
+                "order": "desc"
+            },
+            "number_of_shards": "1",
+            "number_of_replicas": "2",
+            "merge": {
+                "scheduler": {
+                    "max_thread_count": "1"
+                }
+            }
+        }
+    },
+    "aliases": {},
+    "mappings": {
+        "dynamic": false,
+        "_source": {
+            "enabled": true,
+            "includes": [],
+            "excludes": []
+        },
+        "_routing": {
+            "required": false
+        },
+        "dynamic_templates": [],
+        "properties": {
+            "@timestamp": {
+                "index": false,
+                "type": "date"
+            },
+            "@version": {
+                "ignore_above": 3,
+                "index": false,
+                "type": "keyword",
+                "doc_values": false
+            },
+            "accounting_event_delay_time": {
+                "index": false,
+                "type": "long"
+            },
+            "accounting_event_time": {
+                "format": "yyyy/MM/dd HH:mm:ss||yyyy/MM/dd||epoch_millis",
+                "index": true,
+                "type": "date"
+            },
+            "acct_authentic": {
+                "index": false,
+                "type": "text"
+            },
+            "acct_interim_reason": {
+                "index": false,
+                "type": "keyword"
+            },
+            "acct_status_type": {
+                "ignore_above": 20,
+                "index": true,
+                "type": "keyword",
+                "doc_values": true
+            },
+            "acct_terminate_cause": {
+                "ignore_above": 30,
+                "index": false,
+                "type": "keyword"
+            },
+            "calling_station_id": {
+                "ignore_above": 60,
+                "index": true,
+                "type": "keyword",
+                "doc_values": true
+            },
+            "class": {
+                "index": false,
+                "type": "text"
+            },
+            "cumulative_duration_secs": {
+                "coerce": true,
+                "index": true,
+                "ignore_malformed": false,
+                "store": false,
+                "type": "long",
+                "doc_values": true
+            },
+            "data_rate_downstream": {
+                "index": false,
+                "type": "long"
+            },
+            "data_rate_upstream": {
+                "index": false,
+                "type": "long"
+            },
+            "filter_id": {
+                "type": "text"
+            },
+            "framed_pool": {
+                "ignore_above": 10,
+                "index": false,
+                "type": "keyword"
+            },
+            "framed_protocol": {
+                "eager_global_ordinals": false,
+                "norms": false,
+                "ignore_above": 20,
+                "index": false,
+                "store": false,
+                "type": "keyword",
+                "split_queries_on_whitespace": false,
+                "doc_values": true
+            },
+            "input_gigawords": {
+                "index": false,
+                "type": "long"
+            },
+            "input_octets": {
+                "index": false,
+                "type": "long"
+            },
+            "input_packets": {
+                "index": false,
+                "type": "long"
+            },
+            "ip_addr": {
+                "ignore_above": 20,
+                "index": true,
+                "type": "keyword"
+            },
+            "ip_addr_netmask": {
+                "ignore_above": 20,
+                "index": false,
+                "type": "keyword"
+            },
+            "ip_framed_route": {
+                "ignore_above": 40,
+                "index": true,
+                "type": "keyword"
+            },
+            "ipv6_addr": {
+                "ignore_above": 40,
+                "index": true,
+                "type": "keyword"
+            },
+            "nas_ip_address": {
+                "ignore_above": 20,
+                "index": true,
+                "type": "keyword"
+            },
+            "nas_port": {
+                "index": true,
+                "type": "keyword"
+            },
+            "nas_port_id": {
+                "eager_global_ordinals": false,
+                "norms": false,
+                "index": true,
+                "store": false,
+                "type": "keyword",
+                "split_queries_on_whitespace": false,
+                "index_options": "docs",
+                "doc_values": true
+            },
+            "nas_port_type": {
+                "index": false,
+                "type": "text"
+            },
+            "network_type": {
+                "eager_global_ordinals": false,
+                "norms": false,
+                "ignore_above": 10,
+                "index": true,
+                "store": false,
+                "type": "keyword",
+                "split_queries_on_whitespace": false,
+                "index_options": "docs",
+                "doc_values": true
+            },
+            "openreach_id": {
+                "index": false,
+                "type": "text"
+            },
+            "output_gigawords": {
+                "index": false,
+                "type": "long"
+            },
+            "output_octets": {
+                "index": false,
+                "type": "long"
+            },
+            "output_packets": {
+                "index": false,
+                "type": "long"
+            },
+            "_meta": {
+                "type": "object",
+                "properties": {
+                    "csid": {
+                        "type": "object",
+                        "properties": {
+                            "msdn_event": {
+                                "type": "byte"
+                            },
+                            "bbip_event": {
+                                "type": "byte"
+                            },
+                            "empty_event": {
+                                "type": "byte"
+                            },
+                            "bbeu_event": {
+                                "type": "byte"
+                            },
+                            "null_event": {
+                                "type": "byte"
+                            },
+                            "ftip_event": {
+                                "type": "byte"
+                            }
+                        }
+                    },
+                    "ipv6_addr": {
+                        "type": "object",
+                        "properties": {
+                            "empty_event": {
+                                "type": "byte"
+                            },
+                            "null_event": {
+                                "type": "byte"
+                            },
+                            "valid_event": {
+                                "type": "byte"
+                            },
+                            "non_empty_event": {
+                                "type": "byte"
+                            }
+                        }
+                    },
+                    "ip_addr": {
+                        "type": "object",
+                        "properties": {
+                            "empty_event": {
+                                "type": "byte"
+                            },
+                            "null_event": {
+                                "type": "byte"
+                            },
+                            "valid_event": {
+                                "type": "byte"
+                            },
+                            "non_empty_event": {
+                                "type": "byte"
+                            }
+                        }
+                    },
+                    "radius_username": {
+                        "type": "object",
+                        "properties": {
+                            "empty_event": {
+                                "type": "byte"
+                            },
+                            "null_event": {
+                                "type": "byte"
+                            },
+                            "non_empty_event": {
+                                "type": "byte"
+                            }
+                        }
+                    }
+                }
+            },
+            "profile_id": {
+                "index": false,
+                "type": "keyword"
+            },
+            "radius_username": {
+                "index": true,
+                "type": "keyword",
+                "doc_values": true
+            },
+            "server_host_name": {
+                "ignore_above": 40,
+                "index": true,
+                "type": "keyword",
+                "doc_values": true
+            },
+            "session_id": {
+                "ignore_above": 80,
+                "index": true,
+                "type": "keyword",
+                "doc_values": true
+            },
+            "tunnel_client_endpoint": {
+                "eager_global_ordinals": false,
+                "norms": false,
+                "index": true,
+                "store": false,
+                "type": "keyword",
+                "split_queries_on_whitespace": false,
+                "index_options": "docs",
+                "doc_values": true
+            },
+            "tunnel_server_endpoint": {
+                "eager_global_ordinals": false,
+                "norms": false,
+                "index": true,
+                "store": false,
+                "type": "keyword",
+                "split_queries_on_whitespace": false,
+                "index_options": "docs",
+                "doc_values": true
+            },
+            "type": {
+                "ignore_above": 6,
+                "index": true,
+                "type": "keyword"
+            },
+            "user_realm": {
+                "index": true,
+                "type": "keyword",
+                "doc_values": true
+            }
+        }
+    }
+}

@@ -1,0 +1,107 @@
+###
+# Prepare base
+##
+- name: Import secrets
+  include_vars: "inventories/{{ deployment_environment }}/group_vars/elastic_templates/secrets.yml"
+  no_log:       true
+
+- name: Import secrets
+  include_vars: "inventories/{{ deployment_environment }}/group_vars/elastic_nodes/vars.yml"
+  no_log:       true
+###
+
+
+###
+# Import ILM Policies
+##
+- name: Import ACCT ILM Policy
+  uri: 
+    url:              "https://{{ elastic_publish_host }}:61116/_ilm/policy/AcctPolicy"
+    use_proxy:        false
+    user:             "{{ elasticsearch_username }}"
+    password:         "{{ elasticsearch_password }}"
+    ca_path:          "{{ ssl_ca_path }}"
+    method:           PUT
+    src:              "files/ilm_policies/acct_policy_{{ deployment_environment }}.json"
+    body_format:      json
+    force_basic_auth: yes
+  become: "{{ become_root }}"
+
+- name: Import AUTH ILM Policy
+  uri: 
+    url:              "https://{{ elastic_publish_host }}:61116/_ilm/policy/AuthPolicy"
+    use_proxy:        false
+    user:             "{{ elasticsearch_username }}"
+    password:         "{{ elasticsearch_password }}"
+    ca_path:          "{{ ssl_ca_path }}"
+    method:           PUT
+    src:              "files/ilm_policies/auth_policy_{{ deployment_environment }}.json"
+    body_format:      json
+    force_basic_auth: yes
+  become: "{{ become_root }}"
+
+- name: Import AAA Metrics ILM Policy
+  uri:
+    url:              "https://{{ elastic_publish_host }}:61116/_ilm/policy/AAAMetricsPolicy"
+    use_proxy:        false
+    user:             "{{ elasticsearch_username }}"
+    password:         "{{ elasticsearch_password }}"
+    ca_path:          "{{ ssl_ca_path }}"
+    method:           PUT
+    src:              "files/ilm_policies/aaa_metrics_policy_{{ deployment_environment }}.json"
+    body_format:      json
+    force_basic_auth: yes
+  become: "{{ become_root }}"
+
+- name: Import AAA Policy ILM Policy
+  uri:
+    url:              "https://{{ elastic_publish_host }}:61116/_ilm/policy/AAAPolicyPolicy"
+    use_proxy:        false
+    user:             "{{ elasticsearch_username }}"
+    password:         "{{ elasticsearch_password }}"
+    ca_path:          "{{ ssl_ca_path }}"
+    method:           PUT
+    src:              "files/ilm_policies/aaa_policy_policy_{{ deployment_environment }}.json"
+    body_format:      json
+    force_basic_auth: yes
+  become: "{{ become_root }}"
+
+- name: Import AAA Debug ILM Policy
+  uri:
+    url:              "https://{{ elastic_publish_host }}:61116/_ilm/policy/AAADebugPolicy"
+    use_proxy:        false
+    user:             "{{ elasticsearch_username }}"
+    password:         "{{ elasticsearch_password }}"
+    ca_path:          "{{ ssl_ca_path }}"
+    method:           PUT
+    src:              "files/ilm_policies/aaa_debug_policy_{{ deployment_environment }}.json"
+    body_format:      json
+    force_basic_auth: yes
+  become: "{{ become_root }}"
+
+- name: Import DQ Checks ILM Policy
+  uri:
+    url:              "https://{{ elastic_publish_host }}:61116/_ilm/policy/DQChecksPolicy"
+    use_proxy:        false
+    user:             "{{ elasticsearch_username }}"
+    password:         "{{ elasticsearch_password }}"
+    ca_path:          "{{ ssl_ca_path }}"
+    method:           PUT
+    src:              "files/ilm_policies/dq_checks_policy_{{ deployment_environment }}.json"
+    body_format:      json
+    force_basic_auth: yes
+  become: "{{ become_root }}"
+
+- name: Import WBC RCD Connector ILM Policy
+  uri:
+    url:              "https://{{ elastic_publish_host }}:61116/_ilm/policy/WBCRCDConnector"
+    use_proxy:        false
+    user:             "{{ elasticsearch_username }}"
+    password:         "{{ elasticsearch_password }}"
+    ca_path:          "{{ ssl_ca_path }}"
+    method:           PUT
+    src:              "files/ilm_policies/wbc_rcd_connector_policy_{{ deployment_environment }}.json"
+    body_format:      json
+    force_basic_auth: yes
+  become: "{{ become_root }}"
+###

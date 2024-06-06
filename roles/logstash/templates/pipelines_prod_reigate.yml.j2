@@ -1,0 +1,118 @@
+####
+# Kafka WBC topic--> GC WBC BigQuery pipelines
+###
+- pipeline.id:                wbc_kafka_to_bigquery_prod
+  pipeline.workers:           3
+  pipeline.batch.size:        500
+  pipeline.ordered:           false
+  pipeline.ecs_compatibility: disabled
+  path.config:                "{{ logstash_pipeline_dir }}/wbc_prod_kafka_2_bq.conf"
+##
+# Kafka MNA topic--> GC MNA BigQuery pipelines
+###
+- pipeline.id:                mnar_kafka_to_bigquery_prod
+  pipeline.workers:           3
+  pipeline.batch.size:        500
+  pipeline.ordered:           false
+  pipeline.ecs_compatibility: disabled
+  path.config:                "{{ logstash_pipeline_dir }}/mnar_prod_kafka_2_bq.conf"
+####
+
+
+####
+# This pipeline is a fallback if there are some files were not written in BigQuery and instead ended up in
+# bt-radius-wbc-error-data directory - if one sure the data itself is valid, enable pipeline, otherwise
+# data must be checked to ensure nothing else would fail
+###
+- pipeline.id:                wbc_error_files_to_bigquery_prod
+  pipeline.workers:           1
+  pipeline.batch.size:        500
+  pipeline.ordered:           false
+  pipeline.ecs_compatibility: disabled
+  path.config:                "{{ logstash_pipeline_dir }}/wbc_prod_file_2_bq.conf"
+###
+# This pipeline is a fallback if there are some files were not written in BigQuery and instead ended up in
+# bt-mnaradius-error-data directory - if one sure the data itself is valid, enable pipeline, otherwise
+# data must be checked to ensure nothing else would fail
+###
+- pipeline.id:                mnar_error_files_to_bigquery_prod
+  pipeline.workers:           1
+  pipeline.batch.size:        500
+  pipeline.ordered:           false
+  pipeline.ecs_compatibility: disabled
+  path.config:                "{{ logstash_pipeline_dir }}/mnar_prod_file_2_bq.conf"
+####
+
+
+####
+# This pipeline is only to be used when we backport WBC data from Elasticsearch into BigQuery
+###
+# - pipeline.id:                wbc_avro_files_to_bigquery_prod
+#   pipeline.workers:           1
+#   pipeline.batch.size:        1500
+#   pipeline.ordered:           false
+#   pipeline.ecs_compatibility: disabled
+#   path.config:                "{{ logstash_pipeline_dir }}/wbc_prod_avro_file_2_bq.conf"
+###
+####
+# This pipeline is only to be used when we backport MNA-Retail data from Elasticsearch into BigQuery
+###
+# - pipeline.id:                mnar_avro_files_to_bigquery_prod
+#   pipeline.workers:           1
+#   pipeline.batch.size:        1500
+#   pipeline.ordered:           false
+#   pipeline.ecs_compatibility: disabled
+#   path.config:                "{{ logstash_pipeline_dir }}/mnar_prod_avro_file_2_bq.conf"
+###
+
+
+####
+# Scheduled Queries are set to send its execution logs into Google Cloud Pub/Sub
+# This pipeline consumes those logs from Pub/Sub topic and sends them into Elasticsearch
+###
+- pipeline.id:                scheduled_queries_status_pubsub_to_es
+  pipeline.workers:           1
+  pipeline.batch.size:        5
+  pipeline.batch.delay:       1000
+  pipeline.ordered:           false
+  pipeline.ecs_compatibility: disabled
+  path.config:                "{{ logstash_pipeline_dir }}/sq_pubsub_2_es.conf"
+###
+
+
+####
+# Data Quality checks of the data we store in Elasticsearch
+# Part of the work we do to enable Data Quality visualisation across all data storages
+###
+# - pipeline.id:                dq_checks_ref_reigate
+#   pipeline.workers:           1
+#   pipeline.batch.size:        1
+#   pipeline.batch.delay:       10000
+#   pipeline.ordered:           false
+#   pipeline.ecs_compatibility: disabled
+#   path.config:                "{{ logstash_pipeline_dir }}/dq_checks_ref_reigate.conf"
+
+- pipeline.id:                dq_checks_prod_bigquery
+  pipeline.workers:           1
+  pipeline.batch.size:        1
+  pipeline.batch.delay:       10000
+  pipeline.ordered:           false
+  pipeline.ecs_compatibility: disabled
+  path.config:                "{{ logstash_pipeline_dir }}/dq_checks_prod_bigquery.conf"
+
+- pipeline.id:                dq_checks_prod_reigate_elasticsearch
+  pipeline.workers:           1
+  pipeline.batch.size:        1
+  pipeline.batch.delay:       10000
+  pipeline.ordered:           false
+  pipeline.ecs_compatibility: disabled
+  path.config:                "{{ logstash_pipeline_dir }}/dq_checks_prod_reigate_elasticsearch.conf"
+
+- pipeline.id:                dq_checks_prod_tinsley_elasticsearch
+  pipeline.workers:           1
+  pipeline.batch.size:        1
+  pipeline.batch.delay:       10000
+  pipeline.ordered:           false
+  pipeline.ecs_compatibility: disabled
+  path.config:                "{{ logstash_pipeline_dir }}/dq_checks_prod_tinsley_elasticsearch.conf"
+###

@@ -1,0 +1,33 @@
+###
+# Prepare base
+##
+- name: Import secrets
+  include_vars: "inventories/{{ deployment_environment }}/group_vars/elastic_templates/secrets.yml"
+  no_log:       true
+
+- name: Import secrets
+  include_vars: "inventories/{{ deployment_environment }}/group_vars/elastic_nodes/vars.yml"
+  no_log:       true
+###
+
+
+###
+# Import Elasticsearch Watchers
+##
+- name: Import Watchers
+  uri: 
+    url:              "https://{{ elastic_publish_host }}:61116/_watcher/watch/{{ watcher.name }}"
+    use_proxy:        false
+    user:             "{{ elasticsearch_username }}"
+    password:         "{{ elasticsearch_password }}"
+    ca_path:          "{{ ssl_ca_path }}"
+    method:           PUT
+    body:             "{{ lookup('template', 'logstash_watcher_template.json.j2') }}"
+    body_format:      json
+    force_basic_auth: yes
+    status_code:      200,201
+  become: "{{ become_root }}"
+  loop: "{{ elasticsearch_watchers_list }}"
+  loop_control:
+    loop_var: watcher
+###

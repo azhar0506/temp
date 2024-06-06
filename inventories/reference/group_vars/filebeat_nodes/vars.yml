@@ -1,0 +1,48 @@
+###
+# Common variables
+##
+filebeat_image:    "docker.elastic.co/beats/filebeat:{{ elk_version }}"
+
+filebeat_user:  elasticuser
+filebeat_group: elasticuser
+
+filebeat_dir:         /configdata/filebeat-docker
+filebeat_mounted_dir: /usr/share/filebeat
+
+filebeat_elastic_audit_logs_dir:  /configdata/elasticsearch-docker/logs
+filebeat_elastic_audit_logs_file: "{{ filebeat_elastic_audit_logs_dir }}/{{ cluster_name }}_audit.json"
+
+filebeat_elastic_audit_logs_mounted_dir:  "{{ filebeat_mounted_dir }}/eslogs"
+filebeat_elastic_audit_logs_mounted_file: "{{ filebeat_elastic_audit_logs_mounted_dir }}/{{ cluster_name }}_audit.json"
+filebeat_elastic_audit_logs_mounted_path: "{{ filebeat_elastic_audit_logs_mounted_dir }}/*.json"
+
+filebeat_ssl_ca_id:      ca.crt
+filebeat_ssl_ca_cert_id: elk.crt
+filebeat_ssl_ca_key_id:  elk.key
+################################
+
+
+###
+# filebeat.yml varialbes
+##
+filebeat_instance_name: "reference-filebeat"
+filebeat_instance_tags: ["reference-filebeat"]
+
+filebeat_kibana_host:                        "https://kibana.ref.elk.radius.nat.bt.com:8080"
+filebeat_kibana_ssl_certificate_authorities: "{{ filebeat_certs_dir }}/{{ filebeat_ssl_ca_id }}"
+filebeat_kibana_ssl_certificate:             "{{ filebeat_certs_dir }}/{{ filebeat_ssl_ca_cert_id }}"
+filebeat_kibana_ssl_key:                     "{{ filebeat_certs_dir }}/{{ filebeat_ssl_ca_key_id }}"
+
+filebeat_output_elasticsearch_hosts:                       ["https://node1.tinsley.elk.radius.nat.bt.com:61116", "https://node2.tinsley.elk.radius.nat.bt.com:61116", "https://node5.tinsley.elk.radius.nat.bt.com:61116"]
+filebeat_output_elasticsearch_ssl_certificate_authorities: "{{ filebeat_certs_dir }}/{{ filebeat_ssl_ca_id }}"
+filebeat_output_elasticsearch_ssl_certificate:             "{{ filebeat_certs_dir }}/{{ filebeat_ssl_ca_cert_id }}"
+filebeat_output_elasticsearch_ssl_key:                     "{{ filebeat_certs_dir }}/{{ filebeat_ssl_ca_key_id }}"
+################################
+
+
+###
+# .env varialbes
+##
+filebeat_config_dir: "{{ filebeat_dir }}/config"
+filebeat_certs_dir:  "{{ filebeat_mounted_dir }}"
+################################

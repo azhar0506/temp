@@ -1,0 +1,105 @@
+###
+# Prepare base
+##
+- name: Import secrets
+  include_vars: "inventories/{{ deployment_environment }}/group_vars/metricbeat_nodes/secrets.yml"
+  no_log:       true
+
+- name: Does root dirtectory exist?
+  stat:
+    path: "{{ metricbeat_dir }}"
+  register: is_root_dir
+
+- name: Does config dirtectory exist?
+  stat:
+    path: "{{ metricbeat_dir }}/config"
+  register: is_config_dir
+
+- name: Make root directory for project
+  file:
+    path:  "{{ metricbeat_dir }}"
+    owner: "{{ metricbeat_user }}"
+    group: "{{ metricbeat_group }}"
+    state: directory
+    mode:  "0755"
+  when: not is_root_dir.stat.exists
+  become: "{{ become_root }}"
+
+- name: Make config directory for project
+  file:
+    path:  "{{ metricbeat_dir }}/config"
+    owner: "{{ metricbeat_user }}"
+    group: "{{ metricbeat_group }}"
+    state: directory
+    mode:  "0755"
+  when: not is_config_dir.stat.exists
+  become: "{{ become_root }}"
+
+- name: Change root directory ownership
+  file:
+    path:  "{{ metricbeat_dir }}"
+    owner: "{{ metricbeat_user }}"
+    group: "{{ metricbeat_group }}"
+    state: directory
+  when: is_root_dir.stat.exists
+  become: "{{ become_root }}"
+
+- name: Change config directory ownership
+  file:
+    path:  "{{ metricbeat_dir }}/config"
+    owner: "{{ metricbeat_user }}"
+    group: "{{ metricbeat_group }}"
+    state: directory
+  when: is_config_dir.stat.exists
+  become: "{{ become_root }}"
+###
+
+
+###
+# Install Metricbeat
+##
+- name: Sync docker project to remote machine
+  synchronize:
+    src:          files/metricbeat-docker/
+    dest:         "{{ metricbeat_dir }}"
+    recursive:    yes
+    rsync_path:   "/usr/bin/rsync"
+    use_ssh_args: yes
+  become: "{{ become_root }}"
+
+- name: Remove .env.example
+  file:
+    path:  "{{ metricbeat_dir }}/.env.example"
+    state: absent
+
+- name: Bring .env into root folder
+  template:
+    src:   templates/.env.j2
+    dest:  "{{ metricbeat_dir }}/.env"
+    owner: "{{ metricbeat_user }}"
+    group: "{{ metricbeat_group }}"
+    mode:  "0744"
+
+- name: Bring Metricbeat docker-compose.yml file
+  template:
+    src:   templates/docker-compose.yml.j2
+    dest:  "{{ metricbeat_dir }}/docker-compose.yml"
+    owner: "{{ metricbeat_user }}"
+    group: "{{ metricbeat_group }}"
+    mode:  "0755"
+  become: "{{ become_root }}"
+
+- name: Bring metricbeat.yml into config folder
+  template:
+    src:   templates/metricbeat.yml.j2
+    dest:  "{{ metricbeat_dir }}/config/metricbeat.yml"
+    owner: "root"
+    group: "root"
+    mode:  "0744"
+  become: "{{ become_root }}"
+
+- name: Remove config_example directory
+  file:
+    path:  "{{ metricbeat_dir }}/config_example"
+    state: absent
+###

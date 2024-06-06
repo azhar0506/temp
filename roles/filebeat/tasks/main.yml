@@ -1,0 +1,6 @@
+---
+- import_tasks: install-filebeat.yml
+  when: not bump_version
+
+- import_tasks: bump-version.yml
+  when: bump_version

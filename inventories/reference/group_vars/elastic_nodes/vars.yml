@@ -1,0 +1,104 @@
+elastic_image:    "docker.elastic.co/elasticsearch/elasticsearch:{{ elk_version }}"
+
+elastic_user:  elasticuser
+elastic_group: elasticuser
+
+elastic_dir:        /configdata/elasticsearch-docker
+elastic_mapped_dir: /usr/share/elasticsearch
+
+
+##
+# elasticsearch.yml properties
+##
+elastic_cluster_remote_connect: false
+
+elastic_node_name:   "elasticsearch"
+elastic_node_master: "true"
+elastic_node_data:   "true"
+elastic_node_ingest: "true"
+elastic_node_ml:     "true"
+
+elastic_http_port:      "61116"
+elastic_transport_port: "61117"
+elastic_network_host:   "0.0.0.0"
+
+# XPack settings
+elastic_xpack_ml_enabled:                                  "true"
+elastic_xpack_ml_limit:                                    "2g"
+elastic_xpack_monitoring_enabled:                          "true"
+elastic_xpack_monitoring_collection_enabled:               "true"
+elastic_xpack_monitoring_elasticsearch_collection_enabled: "false"
+elastic_xpack_security_authc_api_key_enabled:              "true"
+
+# Authentication settings
+elastic_ldap_ca_id: bt_corp_root_ca.cer
+
+elastic_security_ldap_url:                         "ldaps://iuserldap.nat.bt.com:636"
+elastic_security_ldap_domain_name:                 "iuser.iroot.adidom.com"
+elastic_security_ldap_bind_dn:                     "cn=aaahsd,OU=functional,OU=btplc,DC=iuser,DC=iroot,DC=adidom,DC=com"
+elastic_security_ldap_user_base_dn:                "ou=employee,ou=btplc,dc=iuser,dc=iroot,dc=adidom,dc=com"
+elastic_security_ldap_cad_user_base_dn:            "ou=functional,ou=btplc,dc=iuser,dc=iroot,dc=adidom,dc=com"
+elastic_security_ldap_user_filter:                 "(cn={0})"
+elastic_security_ldap_cad_user_filter:             "(cn={0})"
+elastic_security_ldap_group_search_base_dn:        "ou=btplc,dc=iuser,dc=iroot,dc=adidom,dc=com"
+elastic_security_ldap_cad_group_search_base_dn:    "ou=btplc,dc=iuser,dc=iroot,dc=adidom,dc=com"
+elastic_security_ldap_ssl_certificate_authorities: "{{ elastic_certs_dir }}/{{ elastic_ldap_ca_id }}"
+
+# Breakers & limits settings
+elastic_indeces_total_limit:        "90%"
+elastic_indices_fielddata_limit:    "20%"
+elastic_indices_fielddata_overhead: "1"
+elastic_indices_request_limit:      "25%"
+elastic_indices_request_overhead:   "1"
+elastic_indices_acct_limit:         "38%"
+elastic_indices_acct_overhead:      "1"
+elastic_indices_fielddata_cache:    "10%"
+elastic_indices_queries_cache:      "15%"
+
+elastic_network_request_limit:    "5%"
+elastic_network_request_overhead: "1"
+
+# Discovery settings
+elastic_discovery_hosts:                                  [] # For transition period. After upgrade to version 7.x could be removed
+elastic_discovery_seed_hosts:                             []
+elastic_discovery_find_peers_interval:                    "3s"
+elastic_discovery_seed_resolver_max_concurrent_resolvers: "5"
+elastic_discovery_seed_resolver_timeout:                  "5s"
+elastic_cluster_initial_master_nodes:                     []
+
+elastic_gateway_recover_after_nodes:    "2"
+elastic_gateway_expected_nodes:         "3"
+elastic_gateway_recover_after_time:     "5m"
+
+# SSL settings 
+elastic_ssl_ca_id:                       ca.crt
+elastic_ssl_ca_cert_id:                  elk.crt
+elastic_ssl_ca_key_id:                   elk.key
+elastic_ssl_ca_path:                     "{{ elastic_certs_dir }}/{{ elastic_ssl_ca_id }}"
+elastic_ssl_ca_cert_path:                "{{ elastic_certs_dir }}/{{ elastic_ssl_ca_cert_id }}"
+elastic_ssl_ca_key_path:                 "{{ elastic_certs_dir }}/{{ elastic_ssl_ca_key_id }}"
+elastic_ssl_http_verification_mode:      certificate
+elastic_ssl_transport_verification_mode: certificate
+
+# Remote reindex settings
+elastic_reindex_remote_whitelist: ""
+################################
+
+
+##
+# docker-compose.yml properties
+##
+elastic_memory_limit: 16g
+elastic_jvm_memory:   16g
+elastic_jvm_options:  "-Xms{{ elastic_jvm_memory }} -Xmx{{ elastic_jvm_memory }} -XX:InitiatingHeapOccupancyPercent=70 -XX:ParallelGCThreads=20 -XX:ConcGCThreads=5 -XX:+UseNUMA -XX:NewRatio=5 -Xmn3g"
+################################
+
+
+##
+# .env properties
+##
+elastic_audit_logs_dir: "{{ elastic_dir }}/logs"
+elastic_certs_dir:      "{{ elastic_mapped_dir }}/config"
+elastic_config_dir:     "{{ elastic_dir }}/config"
+elastic_data_dir:       /data
+################################

@@ -1,0 +1,77 @@
+###
+# Prepare base
+##
+- name: Import secrets
+  include_vars: "inventories/{{ deployment_environment }}/group_vars/kibana_nodes/secrets.yml"
+  no_log:       true
+
+- name: Import extra secrets
+  include_vars: "inventories/{{ deployment_environment }}/group_vars/kibana_nodes/{{ extra_secrets_file }}"
+  no_log:       true
+
+- name: Make directory for project
+  file:
+    path:  "{{ kibana_dir }}"
+    owner: "{{ kibana_user }}"
+    group: "{{ kibana_group }}"
+    state: directory
+    mode:  "0755"
+  become: "{{ become_root }}"
+
+- name: Does config dirtectory exist?
+  stat:
+    path: "{{ kibana_dir }}/config"
+  register: is_config_dir
+
+- name: Change config directory ownership
+  file:
+    path:  "{{ kibana_dir }}/config"
+    owner: "{{ kibana_user }}"
+    group: "{{ kibana_group }}"
+    state: directory
+  when:   is_config_dir.stat.exists
+  become: "{{ become_root }}"
+###
+
+###
+# Install Kibana
+##
+- name: Sync docker project to remote machine
+  synchronize:
+    src:          files/kibana-docker/
+    dest:         "{{ kibana_dir }}"
+    recursive:    yes
+    rsync_path:   "/usr/bin/rsync"
+    use_ssh_args: yes
+  become: "{{ become_root }}"
+
+- name: Remove .env.example
+  file:
+    path:  "{{ kibana_dir }}/.env.example"
+    state: absent
+
+- name: Bring .env into root folder
+  template:
+    src:   templates/.env.j2
+    dest:  "{{ kibana_dir }}/.env"
+    owner: "{{ kibana_user }}"
+    group: "{{ kibana_group }}"
+    mode:  "0744"
+
+- name: Bring Kibana docker-compose.yml file
+  template:
+    src:   templates/docker-compose.yml.j2
+    dest:  "{{ kibana_dir }}/docker-compose.yml"
+    owner: "{{ kibana_user }}"
+    group: "{{ kibana_group }}"
+    mode:  "0755"
+  become: "{{ become_root }}"
+
+- name: Bring Kibana configuration yml file
+  template:
+    src:   templates/kibana.yml.j2
+    dest:  "{{ kibana_dir }}/config/kibana.yml"
+    owner: "{{ kibana_user }}"
+    group: "{{ kibana_group }}"
+    mode:  "0755"
+###

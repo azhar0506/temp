@@ -1,0 +1,16 @@
+{
+  "enabled" : true,
+  "roles" : [
+    "bb_tv_team_role"
+  ],
+  "rules" : {
+    "any" : [
+      {
+        "field" : {
+          "groups" : "CN=mygrp-kibana-bb_tv-team-access,OU=group,OU=mygrp,OU=application,OU=btplc,DC=iuser,DC=iroot,DC=adidom,DC=com"
+        }
+      }
+    ]
+  },
+  "metadata" : { }
+}

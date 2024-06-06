@@ -1,0 +1,121 @@
+###
+# Prepare base
+##
+- name: Import secrets
+  include_vars: "inventories/{{ deployment_environment }}/group_vars/elastic_nodes/secrets.yml"
+  no_log:       true
+
+- name: Make root directory for Elasticsearch
+  file:
+    path:  "{{ elastic_dir }}"
+    owner: "{{ elastic_user }}"
+    group: "{{ elastic_group }}"
+    state: directory
+    mode:  "0755"
+  become: "{{ become_root }}"
+
+# Check if required directories already exist
+- name: Does config dirtectory exist?
+  stat:
+    path: "{{ elastic_dir }}/config"
+  register: is_config_dir
+
+- name: Does logs dirtectory exist?
+  stat:
+    path: "{{ elastic_dir }}/logs"
+  register: is_logs_dir
+
+# Create required directories if don't exist
+- name: Make folder for config
+  file:
+    path:  "{{ elastic_dir }}/config"
+    owner: "{{ elastic_user }}"
+    group: "{{ elastic_group }}"
+    state: directory
+    mode:  "0755"
+  when:   is_config_dir.stat.exists == false
+  become: "{{ become_root }}"
+
+- name: Make folder for logs
+  file:
+    path:  "{{ elastic_dir }}/logs"
+    owner: "{{ elastic_user }}"
+    group: "{{ elastic_group }}"
+    state: directory
+    mode:  "0755"
+  when:   is_logs_dir.stat.exists == false
+  become: "{{ become_root }}"
+
+# Ensure correct ownership
+- name: Change config directory ownership
+  file:
+    path:  "{{ elastic_dir }}/config"
+    owner: "{{ elastic_user }}"
+    group: "{{ elastic_group }}"
+    state: directory
+  when:   is_config_dir.stat.exists
+  become: "{{ become_root }}"
+###
+
+
+###
+# Install Elasticsearch
+##
+- name: Bring Elasticsearch docker-compose.yml file
+  template:
+    src:   templates/docker-compose.yml.j2
+    dest:  "{{ elastic_dir }}/docker-compose.yml"
+    owner: "{{ elastic_user }}"
+    group: "{{ elastic_group }}"
+    mode:  "0744"
+  become: "{{ become_root }}"
+
+- name: Bring .env into project folder
+  template:
+    src:   templates/.env.j2
+    dest:  "{{ elastic_dir }}/.env"
+    owner: "{{ elastic_user }}"
+    group: "{{ elastic_group }}"
+    mode:  "0744"
+  become: "{{ become_root }}"
+
+- name: Copy log4j2.properties onto remote
+  copy:
+    src:   files/elasticsearch-docker/config/log4j2.properties
+    dest:  "{{ elastic_dir }}/config/log4j2.properties"
+    owner: "{{ elastic_user }}"
+    group: "{{ elastic_group }}"
+    mode:  "0755"
+  become: "{{ become_root }}"
+
+- name: Bring ElasticSearch configuration yml file
+  template:
+    src:   templates/elasticsearch.yml.j2
+    dest:  "{{ elastic_dir }}/config/elasticsearch.yml"
+    owner: "{{ elastic_user }}"
+    group: "{{ elastic_group }}"
+    mode:  "0755"
+  become: "{{ become_root }}"
+
+# Only applicable to Data nodes
+- name: Bring ReadAhead fix service file
+  template:
+    src:   templates/readahead.service.j2
+    dest:  "/etc/systemd/system/readahead.service"
+    owner: "root"
+    group: "root"
+    mode:  "0640"
+  become: "{{ become_root }}"
+  when:   elastic_tag == 'data'
+
+- name: Resolve vm.max_map_count issue
+  sysctl:
+    name:       vm.max_map_count
+    value:      262144
+    state:      present
+    sysctl_set: yes
+    reload:     yes
+  become: "{{ become_root }}"
+  tags:
+  - initial
+###

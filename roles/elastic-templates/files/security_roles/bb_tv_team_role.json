@@ -1,0 +1,105 @@
+{
+	"cluster": [],
+	"indices": [{
+		"names": [
+			"acct*"
+		],
+		"privileges": [
+			"read"
+		],
+		"field_security": {
+			"grant": [
+				"@timestamp",
+			  "accounting_event_time",
+			  "acct_interim_reason",
+			  "acct_status_type",
+			  "acct_terminate_cause",
+			  "calling_station_id",
+			  "framed_pool",
+			  "framed_protocol",
+			  "ip_addr",
+			  "ip_addr_netmask",
+			  "ip_framed_route",
+			  "ipv6_addr",
+			  "nas_ip_address",
+			  "nas_port",
+			  "nas_port_id",
+			  "nas_port_type",
+			  "openreach_id",
+			  "radius_username",
+			  "server_host_name",
+			  "session_id"
+			],
+			"except": []
+		},
+		"query": {
+			"bool": {
+				"must": [
+					{
+					  "match": {
+						  "type": "mna"
+					  }
+				  }
+				]
+			}
+		},
+		"allow_restricted_indices": false
+	},
+	{
+		"names": [
+			"auth-mna*"
+		],
+		"privileges": [
+			"read"
+		],
+		"field_security": {
+			"grant": [
+				"@timestamp",
+			  "bt_bb_customer_id",
+			  "bt_bb_resilience_mode",
+			  "bt_bb_special_service",
+			  "bt_vpn_selection_mode",
+			  "calling_station_id",
+				"cisco_avpair",
+			  "class",
+			  "destination_address",
+			  "disposition_mode",
+			  "dnp_service_status",
+			  "event_timestamp",
+			  "framed_ip_address",
+			  "indicator",
+			  "nas_id",
+			  "nas_ip_address",
+			  "nas_port_id",
+			  "network_type",
+			  "policy_name",
+			  "radius_username"
+			],
+			"except": []
+		},
+		"allow_restricted_indices": false
+	}
+	],
+	"applications": [{
+		"application": "kibana-.kibana",
+		"privileges": [
+			"feature_dashboard.read",
+			"feature_dev_tools.read",
+			"feature_discover.read",
+			"feature_savedObjectsManagement.all",
+			"feature_savedObjectsTagging.all",
+			"feature_visualize.read"
+		],
+		"resources": [
+			"space:external-view"
+		]
+	}],
+	"run_as": [],
+	"metadata": {
+		"version":     2,
+		"description": "Deployed with Ansible"
+	},
+	"transient_metadata": {
+		"enabled": true
+	}
+}

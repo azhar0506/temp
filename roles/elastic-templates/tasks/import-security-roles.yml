@@ -1,0 +1,30 @@
+###
+# Prepare base
+##
+- name: Import secrets
+  include_vars: "inventories/{{ deployment_environment }}/group_vars/elastic_templates/secrets.yml"
+  no_log:       true
+
+- name: Import secrets
+  include_vars: "inventories/{{ deployment_environment }}/group_vars/elastic_nodes/vars.yml"
+  no_log:       true
+###
+
+
+###
+# Import Security Roles
+##
+- name: Import Security Roles
+  uri: 
+    url:              "https://{{ elastic_publish_host }}:61116/_security/role/{{ item.role_name }}"
+    use_proxy:        false
+    user:             "{{ elasticsearch_username }}"
+    password:         "{{ elasticsearch_password }}"
+    ca_path:          "{{ ssl_ca_path }}"
+    method:           POST
+    src:              "files/security_roles/{{ item.role_name }}.json"
+    body_format:      json
+    force_basic_auth: yes
+  become: "{{ become_root }}"
+  loop: "{{ elasticsearch_security_roles_list }}"
+###

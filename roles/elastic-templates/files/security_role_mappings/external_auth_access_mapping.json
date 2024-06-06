@@ -1,0 +1,16 @@
+{
+  "enabled" : true,
+  "roles" : [
+    "external_auth_access_role"
+  ],
+  "rules" : {
+    "any" : [
+      {
+        "field" : {
+          "groups" : "CN=mygrp-kibana-external-auth-access,OU=group,OU=mygrp,OU=application,OU=btplc,DC=iuser,DC=iroot,DC=adidom,DC=com"
+        }
+      }
+    ]
+  },
+  "metadata" : { }
+}

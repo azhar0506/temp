@@ -1,0 +1,3 @@
+elastic_user:  chefuser
+elastic_group: chefuser
+become_root:   no

@@ -1,0 +1,126 @@
+#============================== Misc =======================================
+name: {{ filebeat_instance_name | default( "filebeat-reference" ) }}
+tags: {{ filebeat_instance_tags | default( ["reference-tag"] ) }}
+
+logging.level:    {{ filebeat_instance_logging_level | default( "info" ) }}
+logging.to_files: {{ filebeat_instance_logging_to_files | default( "false" ) }}
+
+setup.kibana:
+    host:     {{ filebeat_kibana_host | default( "http://localhost:5601" ) }}
+    username: {{ filebeat_kibana_username | default( "my_kibana_user" ) }}
+    password: {{ filebeat_kibana_password | default( "my_kibana_password" ) }}
+
+    ssl.enabled:                 true
+    ssl.certificate_authorities: {{ filebeat_kibana_ssl_certificate_authorities | default( "/etc/pki/root/ca.pem" ) }}
+    ssl.certificate:             {{ filebeat_kibana_ssl_certificate | default( "/etc/pki/client/cert.pem" ) }}
+    ssl.key:                     {{ filebeat_kibana_ssl_key | default( "/etc/pki/client/cert.key" ) }}
+
+
+#============================== Inputs =====================================
+filebeat.modules:
+-   module: elasticsearch
+    audit:
+        enabled: true
+        var.paths:
+        - /usr/share/filebeat/eslogs/*_audit.json
+    server:
+        enabled: true
+        var.paths:
+        - /usr/share/filebeat/eslogs/*_server.json
+    gc:
+        enabled: false
+    deprecation:
+        enabled: true
+        var.paths:
+        - /usr/share/filebeat/eslogs/*_deprecation.json
+    slowlog:
+        enabled: true
+        var.paths:
+        - /usr/share/filebeat/eslogs/*_index_search_slowlog.json
+
+filebeat.autodiscover:
+    providers:
+    -   type: docker
+        labels.dedot: true
+        templates:
+        -   condition:
+                equals.docker.container.name: kibana
+            config:
+            -   type: container
+                format: docker
+                paths:
+                - /var/lib/docker/containers/${data.docker.container.id}/*.log
+        -   condition:
+                equals.docker.container.name: logstash
+            config:
+            -   type: container
+                format: docker
+                paths:
+                - /var/lib/docker/containers/${data.docker.container.id}/*.log
+        -   condition:
+                equals.docker.container.name: metricbeat
+            config:
+            -   type: container
+                format: docker
+                paths:
+                - /var/lib/docker/containers/${data.docker.container.id}/*.log
+
+
+#============================== Processors =================================
+processors:
+-   add_tags:
+        tags: elasticsearch-logs
+        when:
+            equals:
+                container.name: elasticsearch
+-   add_tags:
+        tags: elasticsearch-audit-logs
+        when:
+            equals:
+                event.module: elasticsearch
+-   add_tags:
+        tags: kibana-logs
+        when:
+            equals:
+                container.name: kibana
+-   add_tags:
+        tags: logstash-logs
+        when:
+            equals:
+                container.name: logstash
+-   add_tags:
+        tags: metricbeat-logs
+        when:
+            equals:
+                container.name: metricbeat
+-   drop_event:
+        when:
+            equals:
+                container.name: apm_server
+-   drop_event:
+        when:
+            equals:
+                container.name: filebeat
+-   drop_event:
+        when:
+            equals:
+                container.name: heartbeat
+
+
+#============================== Outputs ====================================
+output.elasticsearch:
+    enabled:  true
+    hosts:    {{ filebeat_output_elasticsearch_hosts | default( ["https://node1:9200"] ) }}
+    username: {{ filebeat_output_elasticsearch_username | default( "elastic" ) }}
+    password: {{ filebeat_output_elasticsearch_password | default( "changeme" ) }}
+
+    compression_level: 7
+    bulk_max_size:     300
+    worker:            2
+    ilm.enabled:       {{ filebeat_output_elasticsearch_ilm_enabled | default( "false" ) }}
+
+    ssl.enabled:                 true
+    ssl.verification_mode:       full
+    ssl.certificate_authorities: {{ filebeat_output_elasticsearch_ssl_certificate_authorities | default( "/path/to/ca.crt" ) }}
+    ssl.certificate:             {{ filebeat_output_elasticsearch_ssl_certificate | default( "/path/to/elk.crt" ) }}
+    ssl.key:                     {{ filebeat_output_elasticsearch_ssl_key | default( "/path/to/elk.key" ) }}

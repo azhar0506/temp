@@ -1,0 +1,69 @@
+# ====================================
+# Reads AAA Policy logs data from Kafka and sends it into relevant Elasticsearch index
+# ====================================
+
+
+input {
+  {%+ for input in item.kafka_inputs %}
+  kafka {
+    id                => "{{ input.id }}"
+    type              => "{{ input.id }}"
+    bootstrap_servers => "{{ input.kafka_bootstrap_servers | default("default") }}"
+    group_id          => "{{ input.pipeline_group_id       | default("default") }}"
+    client_id         => "{{ input.pipeline_client_id      | default("default") }}"
+    topics            => {{  input.kafka_topics            | default('["wbc_default"]') }}
+
+    consumer_threads           => {{ logstash_pipeline_consumer_threads | default(2) }}
+    sasl_kerberos_service_name => "kafka"
+    security_protocol          => "SASL_PLAINTEXT"
+    jaas_path                  => "{{ logstash_jaas_path | default("/usr/share/config/jaas.conf") }}"
+    kerberos_config            => "{{ logstash_kerberos_config_path | default("/usr/share/config/default.conf") }}"
+    auto_offset_reset          => "latest"
+
+    client_dns_lookup => "use_all_dns_ips"
+  }
+  {% endfor %}
+}
+
+filter {
+  json {
+    source => "message"
+  }
+
+  ruby {
+    code => "if event.get('message').include? 'filemanager' then event.set('rule', 1) else event.set('rule', 2) end"
+  }
+
+  if [rule] == 1 {
+    grok {
+      pattern_definitions => { "TIMESTAMP"  => "%{YEAR}/%{MONTHNUM2}/%{MONTHDAY} %{HOUR}:%{MINUTE}:%{SECOND}?%{ISO8601_TIMEZONE}?"}
+      match => { "message" => "%{TIMESTAMP:event_timestamp} <%{USERNAME:policy.plugin_name}> %{GREEDYDATA:policy.message}" }
+    }
+
+  } else {
+    grok {
+      pattern_definitions => { "TIMESTAMP"  => "%{YEAR}/%{MONTHNUM2}/%{MONTHDAY} %{HOUR}:%{MINUTE}:%{SECOND}?%{ISO8601_TIMEZONE}?"}
+      match => { "message" => "%{TIMESTAMP:event_timestamp} <%{USERNAME:policy.plugin_name}:%{WORD:policy.step}> %{GREEDYDATA:policy.message}" }
+    }
+  }
+
+  ruby {
+    code => "timestamp = event.get('event_timestamp'); if timestamp then event.set('event_timestamp', timestamp.split('+')[0]) end;"
+  }
+
+  mutate {
+    remove_field => [ "logstash_role", "rule" ]
+  }
+}
+
+output {
+  elasticsearch {
+    hosts    => {{ logstash_output_elasticsearch_hosts | default("") }}
+    index    => "aaa-policy-logs-%{+YYYY.MM.dd}"
+    user     => "{{ logstash_output_elasticsearch_username | default("elastic") }}"
+    password => "{{ logstash_output_elasticsearch_password | default("no_password") }}"
+
+    ssl_enabled                 => true
+    ssl_certificate_authorities => "{{ logstash_output_elasticsearch_ssl_certificate_authority | default("/usr/share/logstash/ca.crt") }}"
+  }
+}

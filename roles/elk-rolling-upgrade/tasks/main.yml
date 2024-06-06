@@ -1,0 +1,16 @@
+---
+- import_tasks: apm-server-rolling-upgrade.yml
+  when:         apm_server_rolling_upgrade
+
+- import_tasks: filebeat-rolling-upgrade.yml
+  when:         filebeat_rolling_upgrade
+
+- import_tasks: kibana-rolling-upgrade.yml
+  when:         kibana_rolling_upgrade
+
+- import_tasks: logstash-rolling-upgrade.yml
+  when:         logstash_rolling_upgrade
+
+- import_tasks: metricbeat-rolling-upgrade.yml
+  when:         metricbeat_rolling_upgrade
+  

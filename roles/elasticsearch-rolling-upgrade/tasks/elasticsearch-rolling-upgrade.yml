@@ -1,0 +1,78 @@
+###
+# Prepare base
+##
+- name: Import secrets
+  include_vars: "inventories/{{ deployment_environment }}/group_vars/elasticsearch_rolling_upgrade/secrets.yml"
+  no_log:       true
+
+- name: Import secrets
+  include_vars: "inventories/{{ deployment_environment }}/group_vars/elastic_nodes/vars.yml"
+  no_log:       true
+###
+
+
+###
+# Rolling upgrade strategy
+##
+- name: Disable shard allocation for the cluster when upgrading DATA node
+  uri: 
+    url:         "{{ elastic_host }}/_cluster/settings"
+    use_proxy:   false
+    user:        "{{ elastic_username }}"
+    password:    "{{ elastic_password }}"
+    ca_path:     "{{ ssl_ca_path }}"
+    method:      PUT
+    body:        '{ "persistent": { "cluster.routing.allocation.enable": "primaries" } }'
+    body_format: json
+  become: "{{ become_root }}"
+  when:   data_node_upgrade
+
+## Same as manually executing `docker-compose down -v`
+- name: Destroy existing Elasticsearch container
+  community.docker.docker_compose:
+    project_src:    "{{ elastic_dir }}"
+    state:          absent
+    remove_volumes: true
+  become: "{{ become_root }}"
+
+## Same as manually executing `docker-compose up -d`
+- name: Create fresh Elasticsearch container
+  community.docker.docker_compose:
+    project_src:    "{{ elastic_dir }}"
+    state:          present
+  become: "{{ become_root }}"
+  
+- name: Wait for 2 minutes while Elasticsearch container starts up
+  pause:
+    minutes: 2
+  when:   data_node_upgrade
+
+- name: Enable shard allocation for the cluster after DATA node is upgraded
+  uri: 
+    url:         "{{ elastic_host }}/_cluster/settings"
+    use_proxy:   false
+    user:        "{{ elastic_username }}"
+    password:    "{{ elastic_password }}"
+    ca_path:     "{{ ssl_ca_path }}"
+    method:      PUT
+    body:        '{ "persistent": { "cluster.routing.allocation.enable": null } }'
+    body_format: json
+  become: "{{ become_root }}"
+  when:   data_node_upgrade
+
+- name: Wait 1 minute for all shards to be reallocated
+  uri: 
+    url:            "{{ elastic_host }}/_cluster/health"
+    use_proxy:      false
+    method:         GET
+    return_content: true
+    user:           "{{ elastic_username }}"
+    password:       "{{ elastic_password }}"
+    ca_path:        "{{ ssl_ca_path }}"
+  register: response
+  until:    "response.json.unassigned_shards == 0 and response.json.initializing_shards == 0"
+  retries:  300
+  delay:    60
+  become:   "{{ become_root }}"
+  when:     data_node_upgrade
+####

@@ -1,0 +1,1 @@
+ssl_ca_path: /configdata/elasticsearch-docker/ssl/ca.crt

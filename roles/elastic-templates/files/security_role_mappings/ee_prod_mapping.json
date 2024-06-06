@@ -1,0 +1,16 @@
+{
+  "enabled" : true,
+  "roles" : [
+    "ee_team_prod_role"
+  ],
+  "rules" : {
+    "any" : [
+      {
+        "field" : {
+          "groups" : "CN=mygrp-app12393_elasticsearch_prod_reader,OU=group,OU=mygrp,OU=application,OU=btplc,DC=iuser,DC=iroot,DC=adidom,DC=com"
+        }
+      }
+    ]
+  },
+  "metadata" : { }
+}

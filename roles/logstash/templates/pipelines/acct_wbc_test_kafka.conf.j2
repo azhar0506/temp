@@ -1,0 +1,100 @@
+# ====================================
+# Identical to Main Logstash pipeline, but collects TEST WBC data only, then sends it to acct* index in Elasticsearch
+# There are 3 important enrichments happening:
+#   1. We add `type` field, to distinguish between WBC & MNA data in Elasticsearch index
+#   2. We add `network_type` field to understand what network customer is using (21C or 20C)
+#   3. We extract domain information `radius_username` into `user_realm`. This one helps to map customer to the CP given you have domain to CP map available 
+# ====================================
+
+input {
+  kafka {
+    type              => "wbc"
+    bootstrap_servers => "{{ item.kafka_bootstrap_servers | default("default") }}"
+    group_id          => "{{ item.pipeline_group_id | default("default") }}"
+    client_id         => "{{ item.pipeline_client_id | default("default") }}"
+    topics            => {{  item.kafka_topics | default('["wbc_default"]') }}
+
+    consumer_threads           => 1
+    sasl_kerberos_service_name => "kafka"
+    security_protocol          => "SASL_PLAINTEXT"
+    jaas_path                  => "{{ logstash_jaas_path | default("/usr/share/config/jaas.conf") }}"
+    kerberos_config            => "{{ logstash_kerberos_config_path | default("/usr/share/config/default.conf") }}"
+    auto_offset_reset          => "latest"
+
+    client_dns_lookup => "use_all_dns_ips"
+  }
+}
+
+filter {
+  if [type] == "wbc" {
+    csv {
+
+      columns => ["server_host_name","acct_status_type","session_id","calling_station_id","accounting_event_time","accounting_event_delay_time","radius_username","ip_addr","ipv6_addr","nas_ip_address","cumulative_duration_secs","acct_terminate_cause","acct_interim_reason","nas_port","nas_port_id","input_octets","input_gigawords","input_packets","output_octets","output_gigawords","output_packets","data_rate_upstream","data_rate_downstream","profile_id","openreach_id"]
+
+      separator => ","
+      convert => {
+        "accounting_event_time" => "date"
+      }
+
+      convert => {
+        "accounting_event_delay_time" => "integer"
+        "cumulative_duration_secs"    => "integer"
+        "input_octets"                => "integer"
+        "input_gigawords"             => "integer"
+        "input_packets"               => "integer"
+        "output_octets"               => "integer"
+        "output_gigawords"            => "integer"
+        "output_packets"              => "integer"
+        "data_rate_upstream"          => "integer"
+        "data_rate_downstream"        => "integer"
+      }
+    }
+
+    date {
+      match => [ "accounting_event_time", "yyyy/MM/dd HH:mm:ss" ]
+    }
+  }
+
+  # Sometimes Logstash reads in old messages from Kafka topics and that breaks indexing into Elasticsearch
+  # because of ILM policy that makes indices of 7 days old read-only
+  ruby {
+    init => "require 'time'"
+    code => "
+            if ( Time.now.to_i - Time.parse(event.get('accounting_event_time')).to_i ) > 691200
+              event.cancel
+            end
+          "
+  }
+
+  mutate {
+    uppercase => [ "calling_station_id" ]
+  }
+  if [calling_station_id] =~ /BBIP.*|FTIP.*/ {
+    mutate { add_field => { "network_type" => "20C" } }
+  } else if [calling_station_id] =~ /BBEU.*/ {
+    mutate { add_field => { "network_type" => "21C" } }
+  } else if [calling_station_id] =~ /SELENIUM.*/ {
+    mutate { add_field => { "network_type" => "heartbeat" } }
+  } else {
+    mutate { add_field => { "network_type" => "unknown" } }
+  }
+
+  ruby {
+    code => "realm = event.get('radius_username').strip.reverse.split('@'); realm.length <= 1 ? event.set('user_realm', 'unknown') : event.set('user_realm', realm[0].reverse)"
+  }
+  mutate {
+    remove_field => [ "message" ]
+  }
+}
+
+output {
+  elasticsearch {
+    hosts    => {{ logstash_output_elasticsearch_hosts | default("") }}
+    index    => "{{ logstash_acct_index_name_w_date | default("acct_ipsearch") }}"
+    user     => "{{ logstash_output_elasticsearch_username | default("elastic") }}"
+    password => "{{ logstash_output_elasticsearch_password | default("no_password") }}"
+
+    ssl_enabled                 => true
+    ssl_certificate_authorities => "{{ logstash_output_elasticsearch_ssl_certificate_authority | default("/usr/share/logstash/ca.crt") }}"
+  }
+}

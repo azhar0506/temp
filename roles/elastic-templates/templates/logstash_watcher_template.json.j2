@@ -1,0 +1,150 @@
+{
+  "trigger": {
+    "schedule": {
+      "interval": "5m"
+    }
+  },
+  "input": {
+    "search": {
+      "request": {
+        "search_type": "query_then_fetch",
+        "indices": [
+          ".monitoring-logstash-*"
+        ],
+        "rest_total_hits_as_int": true,
+        "body": {
+          "size": 0,
+          "query": {
+            "bool": {
+              "must": [
+                {
+                  "match": {
+                    "host.name": "{{ watcher.logstash_host_name }}"
+                  }
+                },
+                {
+                  "range": {
+                    "@timestamp": {
+                      "gte": "{% raw %}{{ctx.trigger.scheduled_time}}{% endraw %}||-5m/m",
+                      "lte": "{% raw %}{{ctx.trigger.scheduled_time}}{% endraw %}||-1m/m",
+                      "format": "strict_date_optional_time||epoch_millis"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "aggs": {
+            "my_date_histo": {
+              "date_histogram": {
+                "field": "@timestamp",
+                "calendar_interval": "1m"
+              },
+              {% if watcher.logstash_pipeline_id|length >= 1 %}
+              "aggs": {
+                "nested_pipeline": {
+                  "nested": {
+                    "path": "logstash.node.stats.pipelines"
+                  },
+                  "aggs": {
+                    "id": {
+                      "filter": {
+                        "term": {
+                          "logstash.node.stats.pipelines.id": "{{ watcher.logstash_pipeline_id }}"
+                        }
+                      },
+                      "aggs": {
+                        "max": {
+                          "max": {
+                            "field": "logstash.node.stats.pipelines.events.{{ watcher.logstash_pipeline_inout }}"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "the_diff": {
+                  "derivative": {
+                    "buckets_path": "nested_pipeline>id>max"
+                  }
+                }
+              }
+              {% else %}
+              "aggs": {
+                "the_sum": {
+                  "sum": {
+                    "field": "logstash_stats.events.{{ watcher.logstash_pipeline_inout }}"
+                  }
+                },
+                "the_diff": {
+                  "serial_diff": {
+                    "buckets_path": "the_sum",
+                    "lag": 1
+                  }
+                }
+              }
+              {% endif %}
+            }
+          }
+        }
+      }
+    }
+  },
+  {% if watcher.over_threshold == true %}
+  "condition": {
+    "script": {
+      "source": "\n          int sum = ctx.payload.aggregations.my_date_histo.buckets\n                      .stream()\n                      .filter(item -> item.the_diff != null)\n                      .map(item -> item.the_diff.value)\n                      .mapToInt(Integer::intValue)\n                      .sum();\n          return params.threshold < sum / 240\n        ",
+      "lang": "painless",
+      "params": {
+        "threshold": {{ watcher.logstash_pipeline_threshold }}
+      }
+    }
+  },
+  {% else %}
+  "condition": {
+    "script": {
+      "source": "\n          int sum = ctx.payload.aggregations.my_date_histo.buckets\n                      .stream()\n                      .filter(item -> item.the_diff != null)\n                      .map(item -> item.the_diff.value)\n                      .mapToInt(Integer::intValue)\n                      .sum();\n          return params.threshold > sum / 240\n        ",
+      "lang": "painless",
+      "params": {
+        "threshold": {{ watcher.logstash_pipeline_threshold }}
+      }
+    }
+  },
+  {% endif %}
+  "actions": {
+    "logging-action": {
+      "logging": {
+        "level": "warn",
+        "text": "[{% raw %}{{ctx.metadata.name}}{% endraw %}] - Output (events to Elasticsearch) of Logstash pipeline [{{ watcher.logstash_pipeline_id }}] @ [{{ watcher.logstash_host_name }}] instance is {% raw %}{{ctx.payload.rate}}{% endraw %} e/s which is less than threshold of {{ watcher.logstash_pipeline_threshold }} e/s in the past 5 minutes"
+      }
+    },
+    "webhook-action": {
+      "webhook": {
+        "scheme":  "https",
+        "host":    "{{ watcher_webhook_host | default("btgroupcloud.webhook.office.com") }}",
+        "port":    {{ watcher_webhook_port  | default(443) }},
+        "method":  "post",
+        "path":    "{{ watcher_webhook_path }}",
+        "params":  {},
+        "headers": {},
+        "body": "{\n          \"text\": \"[{% raw %}{{ctx.metadata.name}}{% endraw %}] - Output (events to Elasticsearch) of Logstash pipeline [{{ watcher.logstash_pipeline_id }}] @ [{{ watcher.logstash_host_name }}] instance is {% raw %}{{ctx.payload.rate}}{% endraw %} e/s which is less than threshold of {{ watcher.logstash_pipeline_threshold }} e/s in the past 5 minutes\"\n        }",
+        "proxy": {
+          "host": "{{ watcher_webhook_proxy_host | default("cloudproxy-r.nat.bt.com") }}",
+          "port": {{ watcher_webhook_proxy_port  | default(8080) }}
+        }
+      }
+    }
+  },
+  "transform": {
+    "script": {
+      "source": "\n        int sum = ctx.payload.aggregations.my_date_histo.buckets\n                  .stream()\n                  .filter(item -> item.the_diff != null)\n                  .map(item -> item.the_diff.value)\n                  .mapToInt(Integer::intValue)\n                  .sum();\n        return ['rate': sum / 240]\n      ",
+      "lang": "painless"
+    }
+  },
+  "metadata": {
+    "xpack": {
+      "type": "json"
+    },
+    "name": "{{ watcher.name }}"
+  }
+}

@@ -1,0 +1,48 @@
+###
+# Resolve SSL certificates
+##
+- name: Does ssl dirtectory exist?
+  stat:
+    path: "{{ shared_ssl_dir }}"
+  register: is_ssl_dir
+
+- name: Make folder for SSL certificates
+  file:
+    path:  "{{ shared_ssl_dir }}"
+    owner: "{{ ssl_user }}"
+    group: "{{ ssl_group }}"
+    state: directory
+    mode:  "0755"
+  when: not is_ssl_dir.stat.exists
+  become: "{{ become_root }}"
+
+- name: Change ssl directory ownership
+  file:
+    path:  "{{ shared_ssl_dir }}"
+    owner: "{{ ssl_user }}"
+    group: "{{ ssl_group }}"
+    state: directory
+  when: is_ssl_dir.stat.exists
+  become: "{{ become_root }}"
+
+- name: Sync accross SSL certificates
+  synchronize:
+    src:          "files/ssl_{{ deployment_environment }}/"
+    dest:         "{{ shared_ssl_dir }}"
+    recursive:    yes
+    rsync_path:   "/usr/bin/rsync"
+    use_ssh_args: yes
+    perms:        no
+  ignore_errors: true
+  become:        "{{ become_root }}"
+
+- name: Change mode of the SSL files
+  file:
+    path:    "{{ shared_ssl_dir }}"
+    owner:   "{{ ssl_user }}"
+    group:   "{{ ssl_group }}"
+    mode:    "0755"
+    recurse: yes
+  ignore_errors: true
+  become:        "{{ become_root }}"
+###

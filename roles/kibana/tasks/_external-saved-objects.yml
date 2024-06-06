@@ -1,0 +1,63 @@
+- name: Make directory for saved objects
+  file:
+    path:  "{{ kibana_dir }}/saved-objects/external-space"
+    owner: "{{ kibana_user }}"
+    group: "{{ kibana_group }}"
+    state: directory
+    mode:  "0755"
+  become: "{{ become_root }}"
+
+- name: "[External Space] Bring Saved Objects onto the box first"
+  synchronize:
+    src:          files/saved-objects/external-space
+    dest:         "{{ kibana_dir }}/saved-objects/"
+    recursive:    yes
+    rsync_path:   "/usr/bin/rsync"
+    use_ssh_args: yes
+  become: "{{ become_root }}"
+# ===========================
+
+
+- name: "[External Space] Find path to Data View Object ndjson files"
+  find:
+    paths:    "{{ kibana_dir }}/saved-objects/external-space/data-views"
+    recurse:  yes
+    patterns: '*.ndjson'
+  register: external_view_data_views_paths
+  when: import_external_data_views
+
+- name: "[External Space] Find path to Index Pattern Object ndjson files"
+  find:
+    paths:    "{{ kibana_dir }}/saved-objects/external-space/index-patterns"
+    recurse:  yes
+    patterns: '*.ndjson'
+  register: external_view_index_patterns_paths
+  when: import_external_index_patterns
+# ===========================
+
+
+# Import External-View Saved Object
+- name: "[External Space] Import Saved Data Views into Kibana External-View Space"
+  shell:  'curl --cacert /configdata/kibana-docker/ssl/ca.crt --noproxy "*" -XPOST "{{ kibana_server_public_base_url }}/s/{{ item.space_id }}/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@"{{ item.path }}" -K- <<< "--user {{ kibana_super_username }}:{{ kibana_super_password }}"'
+  vars:
+    space_ids:
+      - external-view
+  with_items: "[{% for space_id in space_ids %}{% for file in external_view_data_views_paths.files %}{ 'path': '{{ file.path }}', 'space_id': '{{ space_id }}' }{% if not loop.last %},{% endif %}{% endfor %}{% if not loop.last %},{% endif %}{% endfor %}]"
+  when: import_external_data_views
+
+- name: "[External Space] Import Saved Index Patterns into Kibana External-View Space"
+  shell:  'curl --cacert /configdata/kibana-docker/ssl/ca.crt --noproxy "*" -XPOST "{{ kibana_server_public_base_url }}/s/{{ item.space_id }}/api/saved_objects/_import" -H "kbn-xsrf: true" --form file=@"{{ item.path }}" -K- <<< "--user {{ kibana_super_username }}:{{ kibana_super_password }}"'
+  vars:
+    space_ids:
+      - external-view
+  with_items: "[{% for space_id in space_ids %}{% for file in external_view_index_patterns_paths.files %}{ 'path': '{{ file.path }}', 'space_id': '{{ space_id }}' }{% if not loop.last %},{% endif %}{% endfor %}{% if not loop.last %},{% endif %}{% endfor %}]"
+  when: import_external_index_patterns
+# ===========================
+
+
+# Now we can delete Saved Objects from the remote machine to save space (and because they not needed there)
+# - name: "[External Space] Delete all Saved Objects from the box (cause they were imported)"
+#   file:
+#     path: "{{ kibana_dir }}/saved-objects"
+#     state: absent
+# ===========================

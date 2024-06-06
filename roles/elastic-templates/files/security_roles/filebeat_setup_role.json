@@ -1,0 +1,35 @@
+{
+  "cluster" : [
+    "monitor",
+    "manage_ilm",
+    "manage_ml"
+  ],
+  "indices" : [
+    {
+      "names" : [
+        "*filebeat*"
+      ],
+      "privileges" : [
+        "manage",
+        "write",
+        "read"
+      ],
+      "field_security" : {
+        "grant" : [
+          "*"
+        ],
+        "except" : [ ]
+      },
+      "allow_restricted_indices" : false
+    }
+  ],
+  "applications" : [ ],
+  "run_as" : [ ],
+	"metadata": {
+		"version":     2,
+		"description": "Deployed with Ansible"
+	},
+  "transient_metadata" : {
+    "enabled" : true
+  }
+}

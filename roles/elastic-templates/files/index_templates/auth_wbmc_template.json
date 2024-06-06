@@ -1,0 +1,228 @@
+{
+  "version": 1,
+  "order":   1,
+  "index_patterns": [
+    "auth-wbmc*"
+  ],
+  "settings": {
+    "index": {
+      "lifecycle": {
+        "name": "AuthPolicy"
+      },
+      "refresh_interval": "3s",
+      "sort": {
+        "field": "event_timestamp",
+        "order": "desc"
+      },
+      "number_of_shards": "1",
+      "number_of_replicas": "2",
+      "merge": {
+        "scheduler": {
+          "max_thread_count": "1"
+        }
+      }
+    }
+  },
+  "aliases": {},
+  "mappings": {
+    "_routing": {
+      "required": false
+    },
+    "_source": {
+      "excludes": [],
+      "includes": [],
+      "enabled": true
+    },
+    "dynamic": "strict",
+    "dynamic_templates": [],
+    "properties": {
+      "disposition_mode": {
+        "ignore_above": 15,
+        "index": true,
+        "type": "keyword",
+        "doc_values": true
+      },
+      "nas_ip_address": {
+        "index": true,
+        "store": false,
+        "type": "ip",
+        "doc_values": true
+      },
+      "base_user_name": {
+        "index": true,
+        "type": "keyword",
+        "doc_values": true
+      },
+      "user_realm": {
+        "index": true,
+        "type": "keyword",
+        "doc_values": true
+      },
+      "tags": {
+        "type": "keyword"
+      },
+      "filter_id": {
+        "index": false,
+        "type": "text"
+      },
+      "proxy_auth_server": {
+        "index": true,
+        "type": "keyword",
+        "doc_values": false
+      },
+      "tunnel_client_auth_id": {
+        "index": false,
+        "type": "text"
+      },
+      "tunnel_server_endpoint": {
+        "index": true,
+        "type": "keyword",
+        "doc_values": true
+      },
+      "tunnel_assignment_id": {
+        "type": "text"
+      },
+      "framed_ip_netmask": {
+        "index": false,
+        "type": "keyword",
+        "doc_values": false
+      },
+      "radius_username": {
+        "eager_global_ordinals": false,
+        "norms": false,
+        "index": true,
+        "store": false,
+        "type": "keyword",
+        "split_queries_on_whitespace": false,
+        "index_options": "docs",
+        "doc_values": false
+      },
+      "receipt_time": {
+        "format": "yyyy/MM/dd HH:mm:ss.SSS||epoch_millis",
+        "index": true,
+        "type": "date",
+        "doc_values": true
+      },
+      "event_timestamp": {
+        "format": "yyyy/MM/dd HH:mm:ss.SSS||epoch_millis",
+        "index": true,
+        "type": "date",
+        "doc_values": true
+      },
+      "redback_context_name": {
+        "eager_global_ordinals": false,
+        "norms": false,
+        "index": true,
+        "store": false,
+        "type": "keyword",
+        "index_options": "docs",
+        "split_queries_on_whitespace": false,
+        "doc_values": true
+      },
+      "framed_route": {
+        "eager_global_ordinals": false,
+        "norms": false,
+        "index": true,
+        "store": false,
+        "type": "keyword",
+        "split_queries_on_whitespace": false,
+        "index_options": "docs",
+        "doc_values": true
+      },
+      "cisco_avpair": {
+        "index": true,
+        "type": "text"
+      },
+      "source_address": {
+        "index": true,
+        "type": "ip",
+        "doc_values": true
+      },
+      "source_port": {
+        "index": false,
+        "type": "integer",
+        "doc_values": false
+      },
+      "@version": {
+        "index": false,
+        "type": "keyword",
+        "doc_values": false
+      },
+      "nas_id": {
+        "index": false,
+        "type": "text"
+      },
+      "class": {
+        "index": true,
+        "type": "keyword",
+        "doc_values": true
+      },
+      "destination_address": {
+        "index": true,
+        "type": "ip",
+        "doc_values": true
+      },
+      "framed_ip_address": {
+        "index": true,
+        "store": false,
+        "type": "ip",
+        "doc_values": true
+      },
+      "policy_name": {
+        "eager_global_ordinals": false,
+        "norms": false,
+        "index": true,
+        "store": false,
+        "type": "keyword",
+        "index_options": "docs",
+        "split_queries_on_whitespace": false,
+        "doc_values": true
+      },
+      "server_host_name": {
+        "eager_global_ordinals": false,
+        "norms": false,
+        "index": true,
+        "store": false,
+        "type": "keyword",
+        "split_queries_on_whitespace": false,
+        "index_options": "docs",
+        "doc_values": true
+      },
+      "alc_msap_serv_id": {
+        "index": false,
+        "type": "text"
+      },
+      "service_type": {
+        "eager_global_ordinals": false,
+        "norms": false,
+        "index": true,
+        "store": false,
+        "type": "keyword",
+        "split_queries_on_whitespace": false,
+        "index_options": "docs",
+        "doc_values": true
+      },
+      "@timestamp": {
+        "index": false,
+        "type": "date",
+        "doc_values": true
+      },
+      "nas_port_id": {
+        "index": false,
+        "type": "text"
+      },
+      "network_type": {
+        "ignore_above": 10,
+        "index": true,
+        "type": "keyword",
+        "doc_values": true
+      },
+      "calling_station_id": {
+        "ignore_above": 60,
+        "index": true,
+        "type": "keyword",
+        "doc_values": true
+      }
+    }
+  }
+}

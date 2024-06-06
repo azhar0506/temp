@@ -1,0 +1,73 @@
+#============================== SSL Browser <---> Kibana ===================
+server.uuid:          {{ kibana_server_uuid }}
+server.name:          {{ kibana_server_name | default( "default_name" ) }}
+server.host:          {{ kibana_server_host | default( "0.0.0.0" ) }}
+server.port:          {{ kibana_server_port | default( "80" ) }}
+server.publicBaseUrl: {{ kibana_server_public_base_url | default( "https://kibana.com:80" ) }}
+
+server.ssl.enabled:     true
+server.ssl.certificate: {{ kibana_server_ssl_ca_cert_path | default( "/usr/share/kibana/config/kibana.crt" ) }}
+server.ssl.key:         {{ kibana_server_ssl_ca_key_path | default( "/usr/share/kibana/config/kibana.key" ) }}
+server.ssl.supportedProtocols:
+- TLSv1.2
+
+
+#============================== Monitoring =================================
+monitoring.kibana.collection.enabled: {{ kibana_monitoring_collection_enabled | default( "false" ) }}
+
+monitoring.ui.enabled:                         {{ kibana_monitoring_ui_enabled | default( "true" ) }}
+monitoring.ui.container.elasticsearch.enabled: false
+monitoring.ui.ccs.enabled:                     false # This one is temp solution to allow SUPERUSER to access monitoring in Kibana
+monitoring.ui.elasticsearch.username:          {{ kibana_monitoring_ui_elasticsearch_username | default( "stack_monitoring" ) }}
+monitoring.ui.elasticsearch.password:          {{ kibana_monitoring_ui_elasticsearch_password | default( "stack_monitoring_password" ) }}
+
+
+#============================== SSL Kibana <--> Elasticsearch ===============
+elasticsearch.hosts:                        {{ kibana_elasticsearch_hosts | default( "host1, host2" ) }}
+elasticsearch.username:                     {{ kibana_elasticsearch_username | default( "elastic" ) }}
+elasticsearch.password:                     {{ kibana_elasticsearch_password | default( "no_password" ) }}
+elasticsearch.ssl.certificateAuthorities:   {{ kibana_elasticsearch_ssl_ca_path | default( "/usr/share/kibana/config/ca.crt" ) }}
+elasticsearch.ssl.verificationMode:         certificate
+elasticsearch.ssl.alwaysPresentCertificate: true
+
+
+#============================== Misc =======================================
+csp.strict:      true
+telemetry.optIn: false
+
+# logging.verbose:                           true
+# xpack.monitoring.elasticsearch.logQueries: true
+
+
+#============================== Misc XPack =======================================
+xpack.task_manager.poll_interval: 10000
+xpack.task_manager.max_workers:   15
+
+xpack.task_manager.event_loop_delay.warn_threshold: 10000
+
+xpack.reporting.encryptionKey:    {{ kibana_xpack_reporting_encryptionKey | default( "NoKey" ) }}
+xpack.reporting.csv.maxSizeBytes: 104857600
+xpack.reporting.roles.enabled:    false
+
+xpack.encryptedSavedObjects.encryptionKey: {{ kibana_xpack_encrypted_saved_objects_encryptionKey | default( "NoKey" ) }}
+
+xpack.security.encryptionKey:       {{ kibana_xpack_security_encryptionKey | default( "NoKey" ) }}
+xpack.security.session.idleTimeout: 16h
+xpack.security.session.lifespan:    7d
+xpack.security.authc.providers:
+    basic.basic1:
+        order: 0
+        accessAgreement:
+            message: "**WARNING: You are about to access BT PLC system**\n\n You must be authorised to use it, and keep within the limits of your authorisation\n\n If you\u2019re not authorised, continuing beyond this screen, even to attempt to access\
+                \ this system, could be an offence under UK law\n\n If you misuse this computer, the system, any of its data, or share any data or other information from it without authorisation, we could take action against you\n\n That could mean disciplinary\
+                \ action, legal proceedings, prosecution and/or risk termination of employment\n\n If you think you are not authorised to use this system you must exit now!"
+
+
+# Proxy so actions (except for email) can talk to related hosts
+{% if kibana_xpack_actions_proxy_only_hosts|length >= 1 %}
+xpack.actions.proxyUrl:       {{ kibana_xpack_proxy_url }}
+xpack.actions.proxyOnlyHosts: {{ kibana_xpack_actions_proxy_only_hosts }}
+{% endif %}
+
+# Proxy so we can set Fleet Integrations (ie APM Server)
+xpack.fleet.registryProxyUrl: {{ kibana_xpack_proxy_url }}

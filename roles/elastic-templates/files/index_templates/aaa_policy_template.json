@@ -1,0 +1,94 @@
+{
+  "version": 2,
+  "order":   0,
+  "index_patterns": [
+    "aaa-policy*"
+  ],
+  "settings": {
+    "index": {
+      "lifecycle": {
+        "name": "AAAPolicyPolicy"
+      },
+      "refresh_interval":   "3s",
+      "number_of_shards":   "1",
+      "number_of_replicas": "2",
+      "merge": {
+        "scheduler": {
+          "max_thread_count": "1"
+        }
+      }
+    }
+  },
+  "aliases": {},
+  "mappings": {
+    "_routing": {
+      "required": false
+    },
+    "_source": {
+      "excludes": [],
+      "includes": [],
+      "enabled": true
+    },
+    "dynamic": "strict",
+    "dynamic_templates": [],
+    "properties": {
+      "@timestamp": {
+        "index": false,
+        "type": "date"
+      },
+      "@version": {
+        "ignore_above": 3,
+        "index": false,
+        "type": "keyword",
+        "doc_values": false
+      },
+      "event_timestamp": {
+        "format": "yyyy/MM/dd HH:mm:ss.SSS||epoch_millis",
+        "index": true,
+        "type": "date",
+        "doc_values": true
+      },
+      "message": {
+        "index": false,
+        "type":  "text"
+      },
+      "policy": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "index": true,
+            "type":  "text"
+          },
+          "plugin_name": {
+            "index":  true,
+            "type":   "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword"
+              }
+            }
+          },
+          "step": {
+            "index":      true,
+            "type":       "keyword",
+            "doc_values": true
+          }
+        }
+      },
+      "server_host_name": {
+        "ignore_above": 40,
+        "index":        true,
+        "type":         "keyword",
+        "doc_values":   true
+      },
+      "tags": {
+        "index": true,
+        "type":  "keyword"
+      },
+      "type": {
+        "index": true,
+        "type":  "keyword"
+      }
+    }
+  }
+}

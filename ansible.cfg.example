@@ -1,0 +1,16 @@
+[defaults]
+# Production SSH setting
+ask_pass          = False
+host_key_checking = False
+
+# Misc
+cow_selection         = random
+display_skipped_hosts = False
+
+# Include local modules
+library = /path/to/custom-modules
+
+[ssh_connection]
+# Production setting
+pipelining = true
+ssh_args   = -o PreferredAuthentications=password -o ProxyCommand="ssh -W %h:%p -q user@jumpbox.example.com"

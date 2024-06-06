@@ -1,0 +1,162 @@
+###
+# Logstash docker settings
+##
+logstash_image: "docker.elastic.co/logstash/logstash:{{ elk_version }}"
+###
+
+###
+# Common Logstash config options
+##
+logstash_monitoring_enabled: false
+
+logstash_monitoring_elasticsearch_hosts:                     "http://xxx.xxx.xxx.xxx:61116"
+logstash_monitoring_elasticsearch_ssl_certificate_authority: "{{ logstash_mounted_dir }}/{{ logstash_ssl_ca_id }}"
+
+logstash_user:  elasticuser
+logstash_group: elasticuser
+logstash_dir:   /configdata/logstash-docker
+
+logstash_mounted_dir:          /usr/share/logstash
+logstash_mounted_config_dir:   "{{ logstash_mounted_dir }}/config"
+logstash_mounted_pipeline_dir: "{{ logstash_mounted_dir }}/pipeline"
+
+logstash_pipeline_consumer_threads: 2
+
+logstash_acct_index_name_w_date: "acct-%{+YYYY.MM.dd}"
+
+logstash_auth_mna_index_name_w_date:  "auth-mna-%{+YYYY.MM.dd}"
+logstash_auth_wbc_index_name_w_date:  "auth-wbc-%{+YYYY.MM.dd}"
+logstash_auth_wbmc_index_name_w_date: "auth-wbmc-%{+YYYY.MM.dd}"
+
+logstash_session_data_index_name: session-data-new
+logstash_geoip_data_index_name:   ip_addr-w-location
+
+logstash_aaa_metrics_index:     "aaa-metrics-%{+YYYY.MM.dd}"
+logstash_aaa_policy_logs_index: "aaa-policy-logs-%{+YYYY.MM.dd}"
+logstash_aaa_debug_logs_index:  "aaa-debug-logs-%{+YYYY.MM.dd}"
+
+logstash_metricbeat_system_index:   metricbeat-8.2.2
+logstash_metricbeat_logstash_index: .monitoring-logstash-8-mb
+
+tinsley_logstash_pipeline_main_kafka_wbc_client_id:      acct-btw-tinsley-production-logstash
+tinsley_logstash_pipeline_main_kafka_mna_client_id:      acct-mnar-tinsley-production-logstash
+tinsley_logstash_pipeline_geoip_data_kafka_client_id:    acct-btw-geoip-tinsley-production-logstash
+tinsley_logstash_pipeline_session_data_kafka_client_id:  acct-btw-session-tinsley-production-logstash
+
+tinsley_logstash_auth_accept_mna_kafka_client_id:  auth-mnar-accept-tinsley-production-logstash
+tinsley_logstash_auth_reject_mna_kafka_client_id:  auth-mnar-reject-tinsley-production-logstash
+tinsley_logstash_auth_accept_wbc_kafka_client_id:  auth-btw-accept-tinsley-production-logstash
+tinsley_logstash_auth_reject_wbc_kafka_client_id:  auth-btw-reject-tinsley-production-logstash
+tinsley_logstash_auth_accept_wbmc_kafka_client_id: auth-wbmc-accept-tinsley-production-logstash
+tinsley_logstash_auth_reject_wbmc_kafka_client_id: auth-wbmc-reject-tinsley-production-logstash
+
+tinsley_logstash_pipeline_metricbeat_metrics_kafka_client_id: metricbeat-metrics-tinsley-production-logstash
+
+tinsley_logstash_pipeline_aaa_wbc_metrics_kafka_client_id:  aaa-wbc-metrics-tinsley-production-logstash
+tinsley_logstash_pipeline_aaa_wbmc_metrics_kafka_client_id: aaa-wbmc-metrics-tinsley-production-logstash
+tinsley_logstash_pipeline_aaa_mnaw_metrics_kafka_client_id: aaa-mnaw-metrics-tinsley-production-logstash
+tinsley_logstash_pipeline_aaa_wbc_policy_kafka_client_id:   aaa-wbc-policy-tinsley-production-logstash
+tinsley_logstash_pipeline_aaa_wbc_debug_kafka_client_id:    aaa-wbc-policy-tinsley-production-logstash
+
+reigate_logstash_pipeline_main_kafka_wbc_client_id:      acct-btw-tinsley-production-logstash
+reigate_logstash_pipeline_main_kafka_mna_client_id:      acct-mnar-tinsley-production-logstash
+reigate_logstash_pipeline_geoip_data_kafka_client_id:    acct-btw-geoip-tinsley-production-logstash
+reigate_logstash_pipeline_session_data_kafka_client_id:  acct-btw-session-tinsley-production-logstash
+
+reigate_logstash_auth_accept_mna_kafka_client_id:  auth-mnar-accept-tinsley-production-logstash
+reigate_logstash_auth_reject_mna_kafka_client_id:  auth-mnar-reject-tinsley-production-logstash
+reigate_logstash_auth_accept_wbc_kafka_client_id:  auth-btw-accept-tinsley-production-logstash
+reigate_logstash_auth_reject_wbc_kafka_client_id:  auth-btw-reject-tinsley-production-logstash
+reigate_logstash_auth_accept_wbmc_kafka_client_id: auth-wbmc-accept-tinsley-production-logstash
+reigate_logstash_auth_reject_wbmc_kafka_client_id: auth-wbmc-reject-tinsley-production-logstash
+
+reigate_logstash_pipeline_metricbeat_metrics_kafka_client_id: metricbeat-metrics-tinsley-production-logstash
+
+reigate_logstash_pipeline_aaa_wbc_metrics_kafka_client_id:  aaa-wbc-metrics-tinsley-production-logstash
+reigate_logstash_pipeline_aaa_wbmc_metrics_kafka_client_id: aaa-wbmc-metrics-tinsley-production-logstash
+reigate_logstash_pipeline_aaa_mnaw_metrics_kafka_client_id: aaa-mnaw-metrics-tinsley-production-logstash
+reigate_logstash_pipeline_aaa_wbc_policy_kafka_client_id:   aaa-wbc-policy-tinsley-production-logstash
+reigate_logstash_pipeline_aaa_wbc_debug_kafka_client_id:    aaa-wbc-policy-tinsley-production-logstash
+
+logstash_jvm_minimum_memory: -Xms10g
+logstash_jvm_maximum_memory: -Xmx10g
+logstash_jaas_path:          "{{ logstash_mounted_config_dir }}/logstash_jaas.conf"
+
+logstash_kerberos_principal_name: AAAHSO
+logstash_kerberos_keytab_path:    "{{ logstash_mounted_config_dir }}/{{ logstash_kerberos_principal_name }}.keytab"
+logstash_kerberos_config_path:    "{{ logstash_mounted_config_dir }}/krb5.conf"
+logstash_kerberos_principal:      "{{ logstash_kerberos_principal_name }}@IUSER.IROOT.ADIDOM.COM"
+
+logstash_output_elasticsearch_hosts: ["", "", ""]
+
+tinsley_kafka_host_1: tplhc01d245.iuser.iroot.adidom.com
+tinsley_kafka_host_2: tplhc01d246.iuser.iroot.adidom.com
+tinsley_kafka_host_3: tplhc01d247.iuser.iroot.adidom.com
+
+reigate_kafka_host_1: reha00d004.iuser.iroot.adidom.com
+reigate_kafka_host_2: reha00d005.iuser.iroot.adidom.com
+reigate_kafka_host_3: reha00d021.iuser.iroot.adidom.com
+
+tinsley_kafka_port: 9093
+reigate_kafka_port: 9093
+
+logstash_config_dir:   "{{ logstash_dir }}/config"
+logstash_pipeline_dir: "{{ logstash_dir }}/pipeline"
+
+
+# ssl properties: elasticsearch
+logstash_ssl_ca_id:      ca.crt
+logstash_ssl_ca_cert_id: elk.crt
+logstash_ssl_ca_key_id:  elk.key
+
+logstash_output_elasticsearch_ssl_certificate_authority: "{{ logstash_mounted_dir }}/{{ logstash_ssl_ca_id }}"
+
+
+# each Logstash cluster should be able to fallback to opposite cluster's Kafka datafeed
+tinsley_logstash_kafka_bootstrap_servers: "{{ tinsley_kafka_host_1 }}:{{ tinsley_kafka_port }},{{ tinsley_kafka_host_2 }}:{{ tinsley_kafka_port }},{{ tinsley_kafka_host_3 }}:{{ tinsley_kafka_port }}"
+
+tinsley_logstash_kafka_wbc_topics: ["acct_btw_P0187_03029"]
+tinsley_logstash_kafka_mna_topics: ["acct_mnar_p0776_06936"]
+
+tinsley_logstash_auth_accept_mna_kafka_topics: ["auth_mnar_accept_P0776_06936"]
+tinsley_logstash_auth_reject_mna_kafka_topics: ["auth_mnar_reject_P0776_06936"]
+
+tinsley_logstash_auth_accept_wbc_kafka_topics: ["auth_btw_accept_P0187_03032"]
+tinsley_logstash_auth_reject_wbc_kafka_topics: ["auth_btw_reject_P0187_03032"]
+
+tinsley_logstash_auth_accept_wbmc_kafka_topics: ["auth_wbmc_accept_P0187_03032"]
+tinsley_logstash_auth_reject_wbmc_kafka_topics: ["auth_wbmc_reject_P0187_03032"]
+
+tinsley_logstash_kafka_aaa_wbc_metrics_topic:  ["aaa_metrics_btw_P0187_03029"]
+tinsley_logstash_kafka_aaa_wbmc_metrics_topic: ["aaa_metrics_wbmc_P0187_03029"]
+tinsley_logstash_kafka_aaa_mnaw_metrics_topic: ["aaa_metrics_mnaw_P0776_06936"]
+
+tinsley_logstash_kafka_aaa_wbc_policy_topics: ["aaa_policy_logs_btw_P03032"]
+tinsley_logstash_kafka_aaa_wbc_debug_topics:  ["aaa_debug_logs_btw_P03032"]
+
+tinsley_logstash_kafka_metricbeat_metrics_topics: ["server_metrics_btw_P0187_03029", "server_metrics_wbmc_P0187_03029"]
+
+
+reigate_logstash_kafka_bootstrap_servers: "{{ reigate_kafka_host_1 }}:{{ reigate_kafka_port }},{{ reigate_kafka_host_2 }}:{{ reigate_kafka_port }},{{ reigate_kafka_host_3 }}:{{ reigate_kafka_port }}"
+
+reigate_logstash_kafka_wbc_topics: ["acct_btw_P0187_03029_reigate"]
+reigate_logstash_kafka_mna_topics: ["acct_mnar_p0776_06936_reigate"]
+
+reigate_logstash_auth_accept_mna_kafka_topics: ["auth_mnar_accept_P0776_06936_reigate"]
+reigate_logstash_auth_reject_mna_kafka_topics: ["auth_mnar_reject_P0776_06936_reigate"]
+
+reigate_logstash_auth_accept_wbc_kafka_topics: ["auth_btw_accept_P0187_03032_reigate"]
+reigate_logstash_auth_reject_wbc_kafka_topics: ["auth_btw_reject_P0187_03032_reigate"]
+
+reigate_logstash_auth_accept_wbmc_kafka_topics: ["auth_wbmc_accept_P0187_03032_reigate"]
+reigate_logstash_auth_reject_wbmc_kafka_topics: ["auth_wbmc_reject_P0187_03032_reigate"]
+
+reigate_logstash_kafka_aaa_wbc_metrics_topic:  ["aaa_metrics_btw_P0187_03029_reigate"]
+reigate_logstash_kafka_aaa_wbmc_metrics_topic: ["aaa_metrics_wbmc_P0187_03029_reigate"]
+reigate_logstash_kafka_aaa_mnaw_metrics_topic: ["aaa_metrics_mnaw_P0776_06936_reigate"]
+
+reigate_logstash_kafka_aaa_wbc_policy_topics: ["aaa_policy_logs_btw_P03032_reigate"]
+reigate_logstash_kafka_aaa_wbc_debug_topics:  ["aaa_debug_logs_btw_P03032_reigate"]
+
+reigate_logstash_kafka_metricbeat_metrics_topics: ["server_metrics_btw_P0187_03029_reigate", "server_metrics_wbmc_P0187_03029_reigate"]
+###

@@ -1,0 +1,3 @@
+data_node_upgrade: false
+
+ssl_ca_path: /configdata/elasticsearch-docker/ssl/ca.crt

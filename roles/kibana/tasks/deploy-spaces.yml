@@ -1,0 +1,25 @@
+###
+# kibana_spaces is custom module that you would need to install before you can run this instruction
+# Reference to README on how to do so
+###
+- name: Import secrets
+  include_vars: "inventories/{{ deployment_environment }}/group_vars/kibana_nodes/secrets.yml"
+  no_log:       true
+
+- name: Create all required Kibana Spaces
+  kibana_spaces:
+    kibana_url:              "{{ kibana_server_public_base_url }}"
+    kibana_username:         "{{ kibana_super_username }}"
+    kibana_password:         "{{ kibana_super_password }}"
+    use_proxy:               false
+    ca_path:                 /configdata/kibana-docker/ssl/ca.crt
+    action:                  "{{ item.action }}"
+    space_id:                "{{ item.space_id }}"
+    space_name:              "{{ item.space_name }}"
+    space_description:       "{{ item.space_description }}"
+    space_color:             "{{ item.space_color }}"
+    space_initials:          "{{ item.space_initials }}"
+    space_disabled_features: "{{ item.space_disabled_features }}"
+  loop: "{{ kibana_spaces_list }}"
+
+  

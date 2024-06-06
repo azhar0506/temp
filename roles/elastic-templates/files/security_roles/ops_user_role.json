@@ -1,0 +1,64 @@
+{
+  "cluster" : [
+    "manage",
+    "manage_ilm",
+    "manage_index_templates",
+    "manage_ingest_pipelines",
+    "monitor"
+  ],
+  "indices" : [
+    {
+      "names" : [
+        "*"
+      ],
+      "privileges" : [
+        "read"
+      ],
+      "field_security" : {
+        "grant" : [
+          "*"
+        ],
+        "except" : [ ]
+      },
+      "allow_restricted_indices" : false
+    }
+  ],
+  "applications" : [
+    {
+      "application" : "kibana-.kibana",
+      "privileges" : [
+        "feature_actions.all",
+        "feature_advancedSettings.all",
+        "feature_apm.all",
+        "feature_canvas.all",
+        "feature_dashboard.all",
+        "feature_dev_tools.read",
+        "feature_discover.all",
+        "feature_generalCases.all",
+        "feature_indexPatterns.all",
+        "feature_infrastructure.all",
+        "feature_logs.all",
+        "feature_maps.all",
+        "feature_observabilityCases.all",
+        "feature_savedObjectsManagement.all",
+        "feature_savedObjectsTagging.all",
+        "feature_securitySolutionCases.read",
+        "feature_stackAlerts.all",
+        "feature_uptime.all",
+        "feature_visualize.all"
+      ],
+      "resources" : [
+        "space:ops-view"				
+      ]
+    }
+  ],
+  "run_as" : [ ],
+	"metadata": {
+		"version":     3,
+		"description": "Deployed with Ansible"
+	},
+  "transient_metadata" : {
+    "enabled" : true
+  }
+}
+
