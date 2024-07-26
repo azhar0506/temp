@@ -1,8 +1,0 @@
-KafkaClient {
-	com.sun.security.auth.module.Krb5LoginModule required
-	useKeyTab=true
-	renewTicket=true
-	serviceName="kafka"
-	keyTab="{{ logstash_kerberos_keytab_path | default("/usr/share/logstash/config/default.keytab") }}"
-	principal="{{ logstash_kerberos_principal | default("default@IUSER.IROOT.ADIDOM.COM") }}";
-};

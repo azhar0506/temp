@@ -1,5 +1,0 @@
-metricbeat_user:  chefuser
-metricbeat_group: chefuser
-
-become_root:    no
-

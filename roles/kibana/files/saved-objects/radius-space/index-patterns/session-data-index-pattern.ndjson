@@ -1,3 +1,0 @@
-{"attributes":{"fieldAttrs":"{\"@timestamp\":{\"count\":1},\"_index\":{\"count\":3},\"acct_status_type\":{\"count\":1},\"calling_station_id\":{\"count\":1},\"ip_addr\":{\"count\":1},\"ipv6_addr\":{\"count\":1},\"nas_ip_address\":{\"count\":1},\"nas_ip_location\":{\"count\":2},\"nas_port_id\":{\"count\":1}}","fields":"[]","runtimeFieldMap":"{}","title":"session-data*","typeMeta":"{}"},"coreMigrationVersion":"8.2.2","id":"session-data","migrationVersion":{"index-pattern":"8.0.0"},"references":[],"type":"index-pattern","updated_at":"2022-06-21T14:10:39.008Z","version":"WzU4NTI1LDJd"}
-{"excludedObjects":[],"excludedObjectsCount":0,"exportedCount":1,"missingRefCount":0,"missingReferences":[]}
-

@@ -1,4 +1,0 @@
-ssl_user:    elasticuser
-ssl_group:   elasticuser
-become_root: no
-

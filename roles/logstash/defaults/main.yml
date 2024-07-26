@@ -1,3 +1,0 @@
-logstash_user:  chefuser
-logstash_group: chefuser
-become_root:    no

@@ -1,7 +1,0 @@
-- name:     Bump Elasticsearch version in .env file
-  template:
-    src:   templates/.env.j2
-    dest:  "{{ elastic_dir }}/.env"
-    owner: "{{ elastic_user }}"
-    group: "{{ elastic_group }}"
-    mode:  "0744"

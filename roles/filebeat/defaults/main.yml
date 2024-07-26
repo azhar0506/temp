@@ -1,4 +1,0 @@
-filebeat_user:  chefuser
-filebeat_group: chefuser
-
-become_root:   no

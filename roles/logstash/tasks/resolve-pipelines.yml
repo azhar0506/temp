@@ -1,8 +1,0 @@
-- name: Bring pipeline configs onto the Logstash server
-  template:
-    src:   "templates/pipelines/{{ item.template_name }}.conf.j2"
-    dest:  "{{ logstash_dir }}/pipeline/{{ item.final_name }}.conf"
-    owner: "{{ logstash_user }}"
-    group: "{{ logstash_group }}"
-    mode:  "0755"
-  loop: "{{ logstash_pipelines_list }}"

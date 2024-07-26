@@ -1,2 +1,0 @@
-{"attributes":{"fieldAttrs":"{\"user.name\":{\"count\":2},\"source.ip\":{\"count\":2}}","fields":"[]","runtimeFieldMap":"{}","timeFieldName":"@timestamp","title":"filebeat*","typeMeta":"{}"},"coreMigrationVersion":"8.2.2","id":"filebeat*","migrationVersion":{"index-pattern":"8.0.0"},"references":[],"type":"index-pattern","updated_at":"2022-05-16T14:36:40.686Z","version":"WzM5MzgsMl0="}
-{"excludedObjects":[],"excludedObjectsCount":0,"exportedCount":1,"missingRefCount":0,"missingReferences":[]}

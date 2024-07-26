@@ -1,7 +1,0 @@
----
-- import_tasks: install-apm-server.yml
-  when: not bump_version
-
-- import_tasks: bump-version.yml
-  when: bump_version
-

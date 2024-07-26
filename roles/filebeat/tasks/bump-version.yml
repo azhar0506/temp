@@ -1,7 +1,0 @@
-- name:     Bump Filebeat version in .env file
-  template:
-    src:   templates/.env.j2
-    dest:  "{{ filebeat_dir }}/.env"
-    owner: "{{ filebeat_user }}"
-    group: "{{ filebeat_group }}"
-    mode:  "0744"

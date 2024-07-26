@@ -1,6 +1,0 @@
-import_ilm_policies:           false
-import_index_templates:        false
-import_security_role_mappings: false
-import_security_roles:         false
-
-ssl_ca_path: /configdata/elasticsearch-docker/ssl/ca.crt
