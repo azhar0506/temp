@@ -109,3 +109,4 @@ ansible-playbook -i inventories/production/tinsley_hosts.yml site.yml --tags='el
 3. Depending on the environment & data center, add pipeline details to `pipelines_<data_center>_<environment>_cluster.yml`, following the format of the other pipelines
 4. Copy the `roles/logstash/files/logstash-docker/config_example` directory into `roles/logstash/files/logstash_docker/config` and remove .example from the end of all the files in this new directory
 5. Run the ansible playbook as described above. Note, for the pipeline to take effect the tag `elk-rolling-upgrade` must also be used in order to restart logstash by rebuilding the docker container. Read the details on this in the readme above; only the `logstash_rolling_upgrade` property needs to be set to true within the reference cluster's `hosts.yml` file
+# temp
